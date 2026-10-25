@@ -10,7 +10,7 @@ import numpy as np
 
 FOREST_TC, NONFOREST_TC = 30, 10  # Hansen treecover2000 (%)
 DW_FOREST, DW_NONFOREST = 0.6, 0.2  # Dynamic World mean `trees` probability
-N_TREES = 300
+N_TREES = 100  # D-29: 100 trees; per-pixel cost scales with tree count
 SAMPLES_PER_CLASS = 5000
 FEATURES = ("B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12", "NDVI", "NBR")
 

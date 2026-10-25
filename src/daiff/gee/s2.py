@@ -6,7 +6,7 @@ SCL_MASK_CLASSES = (0, 1, 3, 8, 9, 10)  # no data, saturated, cloud shadow, clou
 BANDS = ("B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12")
 COLLECTION = "COPERNICUS/S2_SR_HARMONIZED"
 MAX_SCENE_CLOUD = 40  # skip mostly-cloudy scenes: fewer images per median, lower EECU cost
-MAX_SCENES_PER_TILE = 12  # least-cloudy scenes kept per MGRS tile per season (D-29)
+MAX_SCENES_PER_TILE = 8  # least-cloudy scenes kept per MGRS tile per season (D-29)
 
 
 def season_window(year: int, start_month: int = 11, end_month: int = 3) -> tuple[str, str]:
