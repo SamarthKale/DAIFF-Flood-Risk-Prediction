@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P1 Science core — executing (native, in session)
-- **Last done:** P1 Task 4 (forest change, MMU, zones).
-- **Next task:** P1 Task 5 (coupling C1-C3, FR-C1).
+- **Last done:** P1 Task 5 (coupling C1-C3).
+- **Next task:** P1 Task 6 (synthetic flood events).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.

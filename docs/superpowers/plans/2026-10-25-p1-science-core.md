@@ -125,13 +125,13 @@ on behalf of the flood model.
 - `coupling_features(f, f_t0, loss_frac, dw_class, hsg, dirs, order, p_mm_raster, cell_area) -> dict[str, np.ndarray]` with keys `f, dF, U, CN, Q` (dF = loss_frac).
 - Stage `coupling` per year: `coupling_<y>.tif` (bands `f, dF, U, Q`), `cn_<y>.tif`; static rain bands `rain_mean_annual`, `rain_p10y_1d` written to `interim/rain_features.tif`.
 
-- [ ] Tests (`test_fr_c1_*`):
+- [x] Tests (`test_fr_c1_*`):
   - `test_fr_c1_upstream_loss_matches_hand_computed`: 10×10 east-tilted plane (all codes 1); row 0 dF = `[0.0, 1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]` → U row 0 = `[0, 0.5, 0.5, 0.375, 0.3, 0.25, 0.2142857, 0.1875, 0.1666667, 0.25]` (abs 1e-9); other rows dF=0 → U=0.
   - `test_fr_c1_nan_loss_excluded` (Review 2): row `[nan, 1.0, 0.0]` → U = `[nan-or-any, 1.0, 0.5]` — cell 0's own U is NaN, cells 1–2 ignore it.
   - `test_fr_c1_curve_number_and_runoff_hand_computed` (P = 100 mm, HSG B): f=1 → CN 55, Q 12.8253; f=0 & crops → CN 78, Q 46.657; f=0.5 & crops → CN 66.5, Q 27.360 (abs 1e-3); water → NaN; `P ≤ 0.2S` → Q 0.
   - `test_gumbel_design_rainfall_k10`: maxima with mean 100, sample std 20 → 126.09 (abs 0.01).
   - `test_coupling_monotone_in_loss`: increasing loss_frac in one upstream cell never decreases dF, U, CN, Q anywhere.
-- [ ] Implement; add CI coverage gate later (Task 10). Commit `feat(coupling): C1 local loss, C2 upstream loss, C3 curve number and runoff`; push.
+- [x] Implement; add CI coverage gate later (Task 10). Commit `feat(coupling): C1 local loss, C2 upstream loss, C3 curve number and runoff`; push.
 
 ### Task 6: Synthetic flood events
 
