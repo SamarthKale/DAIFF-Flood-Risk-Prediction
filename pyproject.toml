@@ -22,6 +22,7 @@ dependencies = [
   "fastapi>=0.115",
   "uvicorn[standard]>=0.30",
   "rio-tiler>=7.0",
+  "netCDF4>=1.7",
 ]
 
 [project.optional-dependencies]

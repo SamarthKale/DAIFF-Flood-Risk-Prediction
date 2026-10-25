@@ -249,6 +249,27 @@ def fill_gaps_from_previous(cur: np.ndarray, prev: np.ndarray | None) -> tuple[n
     return out, share
 
 
+def step_cpc(ctx: Ctx, start_year: int = 2000) -> None:
+    """NOAA CPC daily rainfall per sub-basin (FR-D3); downloads from NOAA PSL, not Earth Engine."""
+    from daiff.gee.aoi import lonlat_bounds
+    from daiff.ingest import cpc
+    from daiff.ingest.rainfall import find_gaps
+    from daiff.zones import rasterize_subbasins
+
+    p = ctx.cfg.project
+    zones, names = rasterize_subbasins(ctx.raw.subbasins, ctx.grid)
+    bounds = lonlat_bounds(ctx.ee, p.aoi_hybas_id, p.aoi_hybas_level)
+    years = range(start_year, max(ctx.cfg.years.years) + 1)
+    df = cpc.ingest(
+        ctx.grid, zones, names["subbasin_id"], years, ctx.raw.root / "cpc", bounds, ctx.log
+    )
+    out = ctx.raw.chirps_daily_csv.parent / "cpc_subbasin_daily.csv"
+    df.to_csv(out, index=False, lineterminator="\n")
+    gaps = find_gaps(df, max_gap_days=3)
+    gaps.to_csv(out.parent / "gaps_cpc.csv", index=False, lineterminator="\n")
+    ctx.log(f"CPC: {len(df)} sub-basin-days, {len(gaps)} gaps > 3 days -> {out}")
+
+
 def step_forest(ctx: Ctx) -> None:
     """Random-forest forest / non-forest at 10 m for every year (D-14)."""
     from daiff.gee import forest_rf
@@ -327,5 +348,6 @@ STEPS = {
     "inventory": step_inventory,
     "dw": step_dw,
     "chirps": step_chirps,
+    "cpc": step_cpc,
     "forest": step_forest,
 }
