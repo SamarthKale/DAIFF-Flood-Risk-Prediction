@@ -93,10 +93,13 @@ def test_fill_gaps_from_previous_year():
 
     prev = np.array([[1, 0, 255]], dtype="uint8")
     cur = np.array([[255, 1, 255]], dtype="uint8")
-    out, share = fill_gaps_from_previous(cur, prev)
+    out, share = fill_gaps_from_previous(cur, prev, prev != 255)
     assert out.tolist() == [[1, 1, 255]] and share == 0.0
     out0, share0 = fill_gaps_from_previous(cur, None)
     assert out0.tolist() == cur.tolist() and share0 == pytest.approx(2 / 3)
+    inside = np.array([[True, True, False]])
+    _, share_in = fill_gaps_from_previous(cur, None, inside)
+    assert share_in == pytest.approx(1 / 2)  # only cells inside the basin count
 
 
 def test_event_windows():

@@ -18,3 +18,5 @@ Rules:
 | 2026-10-25 | FR-D4 | A | kopili / raw ingest | FAIL: 67.6 % of derived streams (>= 200 km2, MERIT routing) within 60 m of OSM rivers (target 90 %); hills 86-89 %, plains ~50 %. Raised as OI-11 | data/kopili/raw/fr_d4.json | daiff check-streams |
 | 2026-10-25 | FR-D5 | T | kopili / raw ingest | PASS: 12 raw layers (dem, hsg, jrc, dw_class x9) share CRS, transform and shape (forest10m pending) | daiff check-grid | daiff check-grid |
 | 2026-10-25 | FR-D1 | T | kopili / raw ingest | PASS (evidence): every season 2018-2026 has scenes from all 8 MGRS tiles intersecting the AOI (128-431 scenes) | data/kopili/raw/s2_inventory_<year>.csv | daiff gee ingest --steps inventory |
+| 2026-10-26 | FR-D2 | I, T | kopili / raw ingest | PASS (gap part): masked gaps 0.049 % of the basin every year 2018-2026 (<= 5 %); 20 random 1 km windows listed for the human visual cloud check (pending) | data/kopili/raw/fr_d2_gap_share.json | daiff gee ingest --steps forest |
+| 2026-10-26 | FR-D5 | T | kopili / raw ingest | PASS: 21 raw layers incl. 9 forest10m maps on the nested 10 m grid | daiff check-grid | daiff check-grid |

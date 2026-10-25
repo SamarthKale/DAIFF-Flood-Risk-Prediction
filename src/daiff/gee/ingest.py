@@ -245,14 +245,17 @@ def step_chirps(ctx: Ctx, start_year: int = 2000) -> None:
     df.to_csv(ctx.raw.chirps_daily_csv, index=False, lineterminator="\n")
 
 
-def fill_gaps_from_previous(cur: np.ndarray, prev: np.ndarray | None) -> tuple[np.ndarray, float]:
-    """Cloud gaps (255) take the previous year's class; returns map and residual gap share
-    inside the valid footprint (FR-D2 ≤ 5 %)."""
+def fill_gaps_from_previous(
+    cur: np.ndarray, prev: np.ndarray | None, footprint: np.ndarray | None = None
+) -> tuple[np.ndarray, float]:
+    """Cloud gaps (255) take the previous year's class; returns the map and the residual gap
+    share inside `footprint` (the basin; FR-D2 ≤ 5 %)."""
     out = cur.copy()
     if prev is not None:
         gap = (out == 255) & (prev != 255)
         out[gap] = prev[gap]
-    footprint = prev != 255 if prev is not None else np.ones(out.shape, bool)
+    if footprint is None:
+        footprint = np.ones(out.shape, bool)
     share = float(((out == 255) & footprint).sum() / max(footprint.sum(), 1))
     return out, share
 
@@ -444,10 +447,12 @@ def step_forest(ctx: Ctx) -> None:
             )
     else:
         _direct_download(ctx, items, tile=1024)
+    dem = read_raster(ctx.raw.dem, ctx.grid)
+    basin = np.repeat(np.repeat(~np.isnan(dem), 3, axis=0), 3, axis=1)  # 10 m footprint
     prev, report = None, {}
     for y in years:
         cur = read_raster(ctx.raw.forest10m(y), ctx.fine)
-        filled, share = fill_gaps_from_previous(cur, prev)
+        filled, share = fill_gaps_from_previous(cur, prev, basin)
         if prev is not None:
             write_cog(
                 ctx.raw.forest10m(y),
