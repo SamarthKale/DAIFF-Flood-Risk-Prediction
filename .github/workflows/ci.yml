@@ -13,6 +13,15 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest -m "not gee and not slow and not colab" --cov=daiff --cov-report=term-missing
+      - name: NFR-9 coupling coverage >= 80%
+        run: uv run pytest tests/coupling --cov=daiff.coupling --cov-fail-under=80 -q
+      - name: NFR-3 synthetic run twice, byte-identical
+        run: |
+          DAIFF_DATA_ROOT=/tmp/runA uv run daiff synth -c configs/synthetic.yaml
+          DAIFF_DATA_ROOT=/tmp/runA uv run daiff run -c configs/synthetic.yaml
+          DAIFF_DATA_ROOT=/tmp/runB uv run daiff synth -c configs/synthetic.yaml
+          DAIFF_DATA_ROOT=/tmp/runB uv run daiff run -c configs/synthetic.yaml
+          uv run python scripts/compare_runs.py /tmp/runA/synthetic /tmp/runB/synthetic
   secrets:
     runs-on: ubuntu-latest
     steps:

@@ -52,6 +52,54 @@ def synth(config: Path = ConfigOpt) -> None:
     typer.echo(f"wrote synthetic raw inputs to {raw.root}")
 
 
+def _csv_ints(value: str | None) -> list[int] | None:
+    return [int(v) for v in value.split(",")] if value else None
+
+
+@app.command()
+def run(
+    config: Path = ConfigOpt,
+    stages: str | None = typer.Option(None, help="Comma-separated subset, e.g. terrain,forest"),
+    years: str | None = typer.Option(None, help="Comma-separated years (default: config years)"),
+    force: bool = typer.Option(False, help="Re-run stages even if unchanged"),
+    log_perf: bool = typer.Option(False, "--log-perf", help="Append timings to docs/perf/"),
+) -> None:
+    """Run the pipeline (terrain → forest → coupling → train → predict → tables) and publish."""
+    from daiff.pipeline.stages import run_pipeline
+
+    cfg = _load(config)
+    run_id = run_pipeline(
+        cfg,
+        stages=stages.split(",") if stages else None,
+        years=_csv_ints(years),
+        force=force,
+        log_perf=log_perf,
+    )
+    typer.echo(f"published run {run_id} under {cfg.data_root / 'store'}")
+
+
+@app.command()
+def train(config: Path = ConfigOpt) -> None:
+    """FR-R1: build features and train the susceptibility model from the config."""
+    from daiff.pipeline.stages import run_pipeline
+
+    run_id = run_pipeline(_load(config), stages=["terrain", "forest", "coupling", "train"])
+    typer.echo(f"trained model for run {run_id}")
+
+
+@app.command()
+def watch(
+    config: Path = ConfigOpt,
+    interval: float = typer.Option(30.0, help="Polling interval in seconds"),
+    once: bool = typer.Option(False, help="Check once and exit"),
+) -> None:
+    """FR-C2: re-run coupling and susceptibility whenever a new forest map appears."""
+    from daiff.pipeline.watch import watch as watch_loop
+
+    new = watch_loop(_load(config), interval_s=interval, once=once)
+    typer.echo(f"processed new forest years: {new}" if new else "no new forest maps")
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

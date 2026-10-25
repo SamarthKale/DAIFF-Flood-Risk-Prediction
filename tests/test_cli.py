@@ -53,6 +53,18 @@ def test_check_metadata_without_published_run_exits_2(tmp_path):
     assert r.exit_code == 2 and "no published run" in r.stdout
 
 
+def test_run_then_check_metadata_on_synthetic(tmp_path):
+    env = _env(tmp_path)
+    runner.invoke(app, ["synth", "-c", str(SYN_CONFIG)], env=env)
+    r = runner.invoke(app, ["run", "-c", str(SYN_CONFIG)], env=env)
+    assert r.exit_code == 0, r.stdout
+    assert "published run" in r.stdout
+    r = runner.invoke(app, ["check-metadata", "-c", str(SYN_CONFIG)], env=env)
+    assert r.exit_code == 0 and "NFR-4 PASS" in r.stdout
+    r = runner.invoke(app, ["watch", "-c", str(SYN_CONFIG), "--once"], env=env)
+    assert r.exit_code == 0 and "no new forest maps" in r.stdout
+
+
 def test_nfr_4_check_metadata_passes_on_published_run(tmp_path, small_grid):
     make_good_run(tmp_path / "synthetic", small_grid)
     publish(tmp_path / "synthetic", "abc123def456")

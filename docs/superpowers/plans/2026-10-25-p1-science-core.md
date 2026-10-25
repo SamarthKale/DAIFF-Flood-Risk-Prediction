@@ -201,8 +201,8 @@ on behalf of the flood model.
 - CLI: `daiff run -c CFG [--stages a,b] [--years 2020,2021] [--force] [--log-perf]`, `daiff watch -c CFG [--interval 30] [--once]`, `daiff train -c CFG`.
 - CI: add `uv run daiff synth -c configs/synthetic.yaml && uv run daiff run -c configs/synthetic.yaml` twice, then a script comparing SHA-256 of all `*.tif` in both runs (NFR-3); `--cov=daiff.coupling --cov-fail-under=80` as a separate step.
 
-- [ ] Tests: `test_end_to_end_synthetic_produces_appendix_c_outputs` (every App. C file for every year; `check_metadata` → []; runtime < 120 s → mark `slow` only if exceeded); `test_nfr_3_rerun_is_byte_identical` (force re-run into a second data root → identical tif hashes); `test_fr_c2_watch_processes_new_forest_map` (publish with years up to 2023, then add `forest10m_2024.tif` via synthetic → `watch(once=True) == [2024]` and `susceptibility_2024.tif`, `delta_s_2024.tif` exist in the newly published run with no manual step).
-- [ ] Commit `feat(pipeline): run/watch/train commands and synthetic end-to-end`; push.
+- [x] Tests: `test_end_to_end_synthetic_produces_appendix_c_outputs` (every App. C file for every year; `check_metadata` → []; runtime < 120 s → mark `slow` only if exceeded); `test_nfr_3_rerun_is_byte_identical` (force re-run into a second data root → identical tif hashes); `test_fr_c2_watch_processes_new_forest_map` (publish with years up to 2023, then add `forest10m_2024.tif` via synthetic → `watch(once=True) == [2024]` and `susceptibility_2024.tif`, `delta_s_2024.tif` exist in the newly published run with no manual step).
+- [x] Commit `feat(pipeline): run/watch/train commands and synthetic end-to-end`; push.
 
 ### Task 11: Validation module and `daiff validate`
 
