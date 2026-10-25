@@ -141,8 +141,8 @@ on behalf of the flood model.
 - `RawLayout.flood_events_csv` (`raw/flood_events.csv`: `event_id,start,end,peak,year,sources,usable,split`), `RawLayout.flood_fraction(event_id)` (`raw/floods/flood_<event_id>.tif`, float32 0–1 at 30 m).
 - `make_flood_events(cfg, raw) -> list[str]` (called at the end of `make_basin`): one event per configured year after t₀ (5 events for synthetic, ids `syn_<year>`), peak in August of that year; flooded fraction = sigmoid(`2.5 − 0.6·HAND + 6·U + 0.03·Q + N(0,0.5)`) thresholded at 0.5 → 1.0 else 0.0, permanent water (jrc > 90) NaN. Uses terrain + coupling functions with the forest map of that year. `split = "train"` if year ≤ `flood.train_until` else `"test"`.
 
-- [ ] Tests: CSV has 5 events, splits = 2 train (2020, 2021) + 3 test; each mask has both classes with ≥ 1% flooded; flooded share is higher in cells with HAND < 5 than HAND ≥ 5; deterministic per seed.
-- [ ] Commit `feat(synthetic): flood events driven by HAND and upstream loss`; push.
+- [x] Tests: CSV has 5 events, splits = 2 train (2020, 2021) + 3 test; each mask has both classes with ≥ 1% flooded; flooded share is higher in cells with HAND < 5 than HAND ≥ 5; deterministic per seed.
+- [x] Commit `feat(synthetic): flood events driven by HAND and upstream loss`; push.
 
 ### Task 7: Flood dataset, model training, baseline, ablation (FR-R1, FR-R3)
 

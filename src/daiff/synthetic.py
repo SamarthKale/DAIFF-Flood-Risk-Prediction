@@ -128,6 +128,60 @@ def _rainfall(ids: list[int], end: date, rng: np.random.Generator) -> pd.DataFra
     return pd.concat(frames, ignore_index=True)
 
 
+def make_flood_events(cfg: DaiffConfig, raw: RawLayout) -> list[str]:
+    """One flood per year after t0, drawn from a known process of HAND, upstream loss and runoff."""
+    from daiff.coupling.compute import (
+        coupling_for_year,
+        forest_for_year,
+        mmu_pixels,
+        rain_rasters,
+    )
+    from daiff.store.cog import read_raster
+    from daiff.terrain.derive import build_static_features
+    from daiff.zones import rasterize_subbasins
+
+    grid = raw.read_grid()
+    rng = np.random.default_rng(cfg.runtime.seed + 1)
+    terrain = build_static_features(raw, grid, cfg.terrain.stream_threshold_km2)
+    zones, names = rasterize_subbasins(raw.subbasins, grid)
+    rain = rain_rasters(raw, zones, list(names["subbasin_id"]), cfg.coupling.return_period_years)
+    jrc = read_raster(raw.jrc_occurrence, grid)
+    hand = np.nan_to_num(terrain.bands["hand"], nan=1e3)
+    t0 = cfg.years.t0
+    rows, ids = [], []
+    for year in [y for y in cfg.years.years if y > t0]:
+        yf = forest_for_year(raw, grid, t0, year, mmu_pixels(cfg.forest.mmu_ha))
+        cf = coupling_for_year(raw, grid, terrain, rain["rain_p10y_1d"], yf, year)
+        u = np.nan_to_num(cf["U"], nan=0.0)
+        q = np.nan_to_num(cf["Q"], nan=0.0)
+        logit = 2.5 - 0.6 * hand + 6.0 * u + 0.03 * q + rng.normal(0, 0.5, grid.shape)
+        flooded = (1 / (1 + np.exp(-logit)) > 0.5).astype("float32")
+        flooded[jrc > 90] = np.nan
+        eid = f"syn_{year}"
+        write_cog(
+            raw.flood_fraction(eid),
+            flooded,
+            grid,
+            nodata=np.nan,
+            tags={"DAIFF_SOURCE": "synthetic", "DAIFF_SEED": str(cfg.runtime.seed)},
+        )
+        rows.append(
+            {
+                "event_id": eid,
+                "start": f"{year}-08-01",
+                "end": f"{year}-08-10",
+                "peak": f"{year}-08-05",
+                "year": year,
+                "sources": "synthetic",
+                "usable": True,
+                "split": "train" if year <= cfg.flood.train_until else "test",
+            }
+        )
+        ids.append(eid)
+    pd.DataFrame(rows).to_csv(raw.flood_events_csv, index=False, lineterminator="\n")
+    return ids
+
+
 def make_basin(cfg: DaiffConfig) -> RawLayout:
     if cfg.synthetic is None:
         raise ValueError("config has no 'synthetic' section")
@@ -157,4 +211,5 @@ def make_basin(cfg: DaiffConfig) -> RawLayout:
     raw.chirps_daily_csv.parent.mkdir(parents=True, exist_ok=True)
     rain = _rainfall(ids, date(years[-1], 3, 31), rng)
     rain.to_csv(raw.chirps_daily_csv, index=False, lineterminator="\n")
+    make_flood_events(cfg, raw)
     return raw

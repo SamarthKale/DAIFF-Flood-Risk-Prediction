@@ -46,6 +46,13 @@ class RawLayout:
     def subbasins(self) -> Path:
         return self.root / "subbasins.geojson"
 
+    @property
+    def flood_events_csv(self) -> Path:
+        return self.root / "flood_events.csv"
+
+    def flood_fraction(self, event_id: str) -> Path:
+        return self.root / "floods" / f"flood_{event_id}.tif"
+
     def layers_30m(self, years: Sequence[int]) -> list[Path]:
         return [self.dem, self.hsg, self.jrc_occurrence, *(self.dw_class(y) for y in years)]
 
