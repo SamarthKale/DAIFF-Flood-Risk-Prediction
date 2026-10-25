@@ -39,22 +39,23 @@ def label_image(ee, year: int, hansen_id: str):
     return ee.Image(255).where(nonforest, 0).where(forest, 1).rename("label").toByte()
 
 
+N_RANDOM_POINTS = 4000  # per year; cost scales with points, not basin area (D-29)
+
+
 def training_points(ee, aoi, years, composite_fn, hansen_id: str, seed: int):
-    """Stratified samples of composite features with auto labels, pooled across years."""
+    """Composite features + auto labels at random points, pooled across years.
+
+    `stratifiedSample` over the whole basin scans every pixel and cost ~350 EECU-hours for
+    9 years; sampling at fixed random points only evaluates the composites there.
+    """
     pts = None
     for y in years:
         img = (
             composite_fn(ee, aoi, y).select(list(FEATURES)).addBands(label_image(ee, y, hansen_id))
         )
-        img = img.updateMask(img.select("label").neq(255))
-        s = img.stratifiedSample(
-            numPoints=SAMPLES_PER_CLASS,
-            classBand="label",
-            region=aoi,
-            scale=10,
-            seed=seed,
-            geometries=False,
-        )
+        where = ee.FeatureCollection.randomPoints(aoi, N_RANDOM_POINTS, seed + y)
+        s = img.sampleRegions(collection=where, scale=10, geometries=False)
+        s = s.filter(ee.Filter.neq("label", 255))
         pts = s if pts is None else pts.merge(s)
     return pts
 

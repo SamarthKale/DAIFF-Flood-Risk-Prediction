@@ -5,6 +5,7 @@ from __future__ import annotations
 SCL_MASK_CLASSES = (0, 1, 3, 8, 9, 10)  # no data, saturated, cloud shadow, cloud med/high, cirrus
 BANDS = ("B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12")
 COLLECTION = "COPERNICUS/S2_SR_HARMONIZED"
+MAX_SCENE_CLOUD = 40  # skip mostly-cloudy scenes: fewer images per median, lower EECU cost
 
 
 def season_window(year: int, start_month: int = 11, end_month: int = 3) -> tuple[str, str]:
@@ -22,7 +23,13 @@ def masked_collection(ee, aoi, year: int):
             bad = bad.Or(scl.eq(c))
         return img.updateMask(bad.Not()).select(list(BANDS)).divide(10000)
 
-    return ee.ImageCollection(COLLECTION).filterBounds(aoi).filterDate(start, end).map(mask)
+    return (
+        ee.ImageCollection(COLLECTION)
+        .filterBounds(aoi)
+        .filterDate(start, end)
+        .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", MAX_SCENE_CLOUD))
+        .map(mask)
+    )
 
 
 def composite(ee, aoi, year: int):
