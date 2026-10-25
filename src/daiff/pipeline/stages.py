@@ -263,12 +263,11 @@ def build_stages(p: RunPlan) -> list[Stage]:
     def per_year(*fns):
         return lambda _c: [fn(y) for y in ys for fn in fns]
 
-    raw_flood = (
-        [p.raw.flood_events_csv]
-        + [p.raw.flood_fraction(e) for e in pd.read_csv(p.raw.flood_events_csv)["event_id"]]
-        if p.raw.flood_events_csv.exists()
-        else []
-    )
+    raw_flood = []
+    if p.raw.flood_events_csv.exists():
+        ev = pd.read_csv(p.raw.flood_events_csv)
+        usable = ev[ev["usable"].astype(bool) & ev["year"].isin(p.years)]
+        raw_flood = [p.raw.flood_events_csv] + [p.raw.flood_fraction(e) for e in usable["event_id"]]
     return [
         Stage(
             "terrain",

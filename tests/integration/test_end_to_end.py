@@ -65,6 +65,15 @@ def test_nfr_3_rerun_is_byte_identical(e2e, tmp_path):
     assert a == b and len(a) > 20
 
 
+def test_unusable_event_without_mask_does_not_block_training(tmp_path):
+    cfg = load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(tmp_path)})
+    raw = make_basin(cfg)
+    ev = pd.read_csv(raw.flood_events_csv)
+    extra = ev.iloc[[0]].assign(event_id="no_mask_2020", usable=False)
+    pd.concat([ev, extra]).to_csv(raw.flood_events_csv, index=False)
+    assert run_pipeline(cfg)
+
+
 def test_fr_c2_watch_processes_new_forest_map(tmp_path):
     cfg = load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(tmp_path)})
     make_basin(cfg)
