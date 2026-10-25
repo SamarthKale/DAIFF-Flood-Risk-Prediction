@@ -43,6 +43,29 @@ project guide. Update this file in the same commit that adds a dataset or depend
 | pyarrow | Apache-2.0 |
 | dask, distributed | BSD-3-Clause |
 | dask-jobqueue (optional, HPC) | BSD-3-Clause |
+| fastapi | MIT |
+| uvicorn | BSD-3-Clause |
+| rio-tiler | BSD-3-Clause |
+| httpx, pillow (tests) | BSD-3-Clause, MIT-CMU (HPND) |
+
+## Web dashboard (npm)
+
+| Library | Licence |
+|---|---|
+| react, react-dom | MIT |
+| react-router-dom | MIT |
+| maplibre-gl | BSD-3-Clause |
+| @tanstack/react-table | MIT |
+| recharts | MIT |
+| vite, vitest, typescript | MIT / Apache-2.0 (typescript) |
+| @testing-library/* | MIT |
+
+## Map tiles shown in the dashboard
+
+| Tiles | Terms |
+|---|---|
+| OpenStreetMap standard tiles (basemap) | ODbL data; OSM tile usage policy (attribution, light use) |
+| Esri World Imagery (Labelling page only) | Esri terms of use, attribution required; non-commercial reference viewing |
 | pytest, pytest-cov | MIT |
 | ruff | MIT |
 | hatchling (build) | MIT |

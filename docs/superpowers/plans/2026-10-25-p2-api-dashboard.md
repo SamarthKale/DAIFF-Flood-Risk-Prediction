@@ -66,19 +66,19 @@ maplibre-gl, @tanstack/react-table, recharts, react-router-dom, vitest + @testin
 
 ### Task 6: Web scaffold and API client
 **Files:** `web/` via `npm create vite@latest web -- --template react-ts`, then add deps; `web/src/api.ts`, `web/src/types.ts`, `web/vite.config.ts` (proxy `/api` → `http://localhost:8000`), `web/src/App.tsx` (router + nav: Map, Sub-basins, Validation, Labelling), `web/src/components/Banner.tsx`.
-- [ ] Vitest: `Banner` renders exact text with AUC from props; `api.ts` builds tile URL `"/api/tiles/{layer}/{year}/{z}/{x}/{y}.png"`. `npm run build` succeeds. Commit `feat(web): scaffold React app, API client, banner`.
+- [x] Vitest: `Banner` renders exact text with AUC from props; `api.ts` builds tile URL `"/api/tiles/{layer}/{year}/{z}/{x}/{y}.png"`. `npm run build` succeeds. Commit `feat(web): scaffold React app, API client, banner`.
 
 ### Task 7: Map page (FR-V1, FR-V3, NFR-8)
 **Files:** `web/src/pages/MapPage.tsx`, `components/LayerSwitcher.tsx`, `YearSelector.tsx`, `Legend.tsx`, `PointPanel.tsx`.
 - MapLibre with CARTO Positron basemap (attribution), raster source per layer/year, sub-basin outlines (flagged = red), click → `/api/point` → panel with Recharts line (forest fraction by year), S, class, ΔS, top-3 features; "No data here" on 404. Banner always visible.
-- [ ] Vitest: LayerSwitcher emits selected layer; PointPanel renders values and "No data here". Manual: `uv run daiff serve` + `npm run dev`, every layer for every year loads (record in STATUS). Commit `feat(web): map page with layers, years, legend and point panel`.
+- [x] Vitest: LayerSwitcher emits selected layer; PointPanel renders values and "No data here". Manual: `uv run daiff serve` + `npm run dev`, every layer for every year loads (record in STATUS). Commit `feat(web): map page with layers, years, legend and point panel`.
 
 ### Task 8: Sub-basins, Validation and Labelling pages
 **Files:** `pages/SubbasinsPage.tsx` (TanStack sortable table, name search box, CSV/GeoTIFF download links, row click → map zoom), `pages/ValidationPage.tsx` (metrics cards, ablation table, confusion matrix), `pages/LabellingPage.tsx` (interpreter picker, point-by-point view with Esri World Imagery + preview composites per year, buttons forest / non-forest / unsure for t₀ and t, progress counter, agreement summary).
-- [ ] Vitest: table sorts by `forest_loss_ha` desc on header click; search filters by name; labelling submits the right payload. Commit `feat(web): sub-basins, validation and labelling pages`.
+- [x] Vitest: table sorts by `forest_loss_ha` desc on header click; search filters by name; labelling submits the right payload. Commit `feat(web): sub-basins, validation and labelling pages`.
 
 ### Task 9: Production serving, CI web job, NFR-5 check, close-out
 - `daiff serve` mounts `web/dist` at `/` when present (SPA fallback to `index.html`).
 - CI job `web`: `actions/setup-node@v4` (node 20), `npm ci`, `npm test -- --run`, `npm run build` in `web/`.
 - `scripts/nfr5_timing.py`: times 5 layer tiles + table endpoint against a running server, appends to `docs/perf/`.
-- [ ] Update verification matrix (FR-V1–V3, NFR-5, NFR-8 → passing on synthetic), STATUS → P2 done, next = P3. Commit `feat: serve built dashboard; ci web job; close P2`; push.
+- [x] Update verification matrix (FR-V1–V3, NFR-5, NFR-8 → passing on synthetic), STATUS → P2 done, next = P3. Commit `feat: serve built dashboard; ci web job; close P2`; push.

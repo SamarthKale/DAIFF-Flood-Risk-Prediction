@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "daiff-synthetic",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "daiff", "serve", "-c", "configs/synthetic.yaml", "--port", "8000"],
+      "port": 8000
+    }
+  ]
+}

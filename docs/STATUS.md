@@ -4,9 +4,9 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P2 API + dashboard — executing (native, in session)
-- **Last done:** P2 Tasks 1-5 (API: meta, tiles, sub-basins/exports/flags, point query, metrics, labelling; daiff serve).
-- **Next task:** P2 Task 6 (web scaffold + API client).
+- **Phase:** P3 Kopili ingestion — blocked on Earth Engine registration (see Waiting on humans)
+- **Last done:** P2 complete (API + React/MapLibre dashboard, built frontend served by daiff serve).
+- **Next task:** P3 Task 1 (daiff gee check) — needs DAIFF_GEE_PROJECT in .env and earthengine authenticate.
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
@@ -17,7 +17,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 |---|---|---|---|
 | P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | **done** |
 | P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | [plan](superpowers/plans/2026-10-25-p1-science-core.md) | **done** |
-| P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | [plan](superpowers/plans/2026-10-25-p2-api-dashboard.md) | not started |
+| P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | [plan](superpowers/plans/2026-10-25-p2-api-dashboard.md) | **done** |
 | P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | [plan](superpowers/plans/2026-10-25-p3-kopili-ingestion.md) | not started |
 | P4 Tier 1 acceptance | real runs, validation, U-Net challenger, NFR checks, test log | [plan](superpowers/plans/2026-10-25-p4-p7-acceptance-tier2-tier3-closeout.md) | not started (refine at start) |
 | P5 Tier 2 | monthly forest, rainfall risk, what-if, alerts | same file | not started (refine at start) |
@@ -54,6 +54,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-25 | Samarth + Claude | P2 API + dashboard done (FastAPI + React/MapLibre; NFR-5 server-side 0.13-0.20 s) |
 | 2026-10-25 | Samarth + Claude | P1 science core executed (12 tasks, 125 tests); synthetic AUC 0.999 vs HAND 0.709 |
 | 2026-10-25 | Samarth + Claude | P0 bootstrap executed (10 tasks, 57 tests) |
 | 2026-10-25 | Samarth + Claude | Read SRS and problem statement; brainstormed; approved design; wrote spec, CLAUDE.md and docs |
