@@ -40,16 +40,21 @@ class Ctx:
     raw: RawLayout
     aoi: object  # ee.Geometry
     log: Log
+    only_years: list[int] | None = None
+
+    @property
+    def years(self) -> list[int]:
+        return self.only_years or self.cfg.years.years
 
     @property
     def fine(self) -> Grid:
         return self.grid.nested(NESTED_FACTOR)
 
 
-def make_ctx(ee, cfg: DaiffConfig, log: Log = print) -> Ctx:
+def make_ctx(ee, cfg: DaiffConfig, log: Log = print, years: list[int] | None = None) -> Ctx:
     p = cfg.project
     aoi = basin_fc(ee, p.aoi_hybas_id, p.aoi_hybas_level).geometry()
-    return Ctx(ee, cfg, Grid.from_config(cfg), RawLayout(cfg.data_root), aoi, log)
+    return Ctx(ee, cfg, Grid.from_config(cfg), RawLayout(cfg.data_root), aoi, log, years)
 
 
 def ensure_folders(ee, root: str) -> None:
@@ -188,13 +193,13 @@ def step_dw(ctx: Ctx) -> None:
             255,
             refdata.DATASETS["dynamic_world"],
         )
-        for y in ctx.cfg.years.years
+        for y in ctx.years
     ]
     _export_and_download(ctx, items)
 
 
 def step_inventory(ctx: Ctx) -> None:
-    for y in ctx.cfg.years.years:
+    for y in ctx.years:
         rows = s2.inventory(ctx.ee, ctx.aoi, y)
         pd.DataFrame(rows).to_csv(ctx.raw.root / f"s2_inventory_{y}.csv", index=False)
         ctx.log(f"S2 {y}: {len(rows)} scenes, {len({r['mgrs_tile'] for r in rows})} MGRS tiles")
@@ -250,9 +255,12 @@ def step_forest(ctx: Ctx) -> None:
     from daiff.store.cog import read_raster, write_cog
 
     ee, cfg = ctx.ee, ctx.cfg
-    years = cfg.years.years
+    years = ctx.years
+    all_years = cfg.years.years  # training pools every year
     hansen = refdata.DATASETS["hansen"]
-    points = forest_rf.training_points(ee, ctx.aoi, years, s2.composite, hansen, cfg.runtime.seed)
+    points = forest_rf.training_points(
+        ee, ctx.aoi, all_years, s2.composite, hansen, cfg.runtime.seed
+    )
     use_assets = _assets_available(ctx)
     if use_assets:
         table = asset_id(cfg, "forest_training_points")

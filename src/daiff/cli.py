@@ -227,13 +227,14 @@ def gee_aoi(config: Path = ConfigOpt) -> None:
 def gee_ingest(
     config: Path = ConfigOpt,
     steps: str = typer.Option("static,coverage,inventory,dw,chirps", help="Comma-separated steps"),
+    years: str | None = typer.Option(None, help="Comma-separated subset of years"),
 ) -> None:
     """Export from Earth Engine and download into the raw layout (idempotent per step)."""
     from daiff.gee.auth import init_ee
     from daiff.gee.ingest import STEPS, make_ctx
 
     cfg = _load(config)
-    ctx = make_ctx(init_ee(cfg), cfg, log=typer.echo)
+    ctx = make_ctx(init_ee(cfg), cfg, log=typer.echo, years=_csv_ints(years))
     for name in steps.split(","):
         if name not in STEPS:
             typer.echo(f"unknown step {name}; choose from {', '.join(STEPS)}")
