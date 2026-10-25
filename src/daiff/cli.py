@@ -9,6 +9,8 @@ import typer
 from daiff import __version__
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
+gee_app = typer.Typer(no_args_is_help=True, help="Google Earth Engine commands (P3).")
+app.add_typer(gee_app, name="gee")
 
 ConfigOpt = typer.Option(..., "-c", "--config", help="Path to a YAML config in configs/.")
 
@@ -183,6 +185,19 @@ def serve(
     from daiff.api.app import create_app
 
     uvicorn.run(create_app(_load(config), reference_dir=reference_dir), host=host, port=port)
+
+
+@gee_app.command("check")
+def gee_check(config: Path = ConfigOpt) -> None:
+    """Verify Earth Engine login for the configured project (prints 2 on success)."""
+    from daiff.gee.auth import GeeAuthError, init_ee
+
+    try:
+        ee = init_ee(_load(config))
+    except GeeAuthError as exc:
+        typer.echo(str(exc))
+        raise typer.Exit(3) from exc
+    typer.echo(f"Earth Engine OK: 1 + 1 = {ee.Number(1).add(1).getInfo()}")
 
 
 @app.command("check-grid")

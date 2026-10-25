@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P3 Kopili ingestion — blocked on Earth Engine registration (see Waiting on humans)
-- **Last done:** P2 complete (API + React/MapLibre dashboard, built frontend served by daiff serve).
-- **Next task:** P3 Task 1 (daiff gee check) — needs DAIFF_GEE_PROJECT in .env and earthengine authenticate.
+- **Last done:** P3 offline parts: flood-event candidates (reference/flood_events_kopili.csv), GEE auth/export/S2/RF/S1/reference builders, rainfall gaps + CPC mapping, OSM stream metric (tests pass; Earth Engine builders not yet run live).
+- **Next task:** P3 Task 3+ live: `daiff gee check`, then AOI/sub-basins, exports and downloads (needs DAIFF_GEE_PROJECT in .env + `earthengine authenticate`). Code in src/daiff/gee/ is written; wire `daiff gee ingest` after the first live AOI run.
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
