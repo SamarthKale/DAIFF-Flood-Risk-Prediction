@@ -1,0 +1,12 @@
+project: {name: kopili, basin: "Kopili, Assam"}
+grid:
+  crs: EPSG:32646
+  res: 30
+  bounds: null          # set from the AOI in P3 (daiff gee aoi)
+  buffer_m: 1000
+years:
+  t0: 2019              # D-24: re-check S2 L2A coverage of 2017/2018 in P3
+  years: [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+gee: {project: null, asset_root: null}   # project comes from DAIFF_GEE_PROJECT in .env
+runtime: {seed: 42}
+paths: {data_root: ../data}

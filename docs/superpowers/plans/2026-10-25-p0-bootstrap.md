@@ -87,7 +87,7 @@ python-dotenv, pandas, pytest, pytest-cov, ruff, GitHub Actions, gitleaks.
 **Interfaces:**
 - Produces: `daiff.__version__ = "0.1.0"`; `daiff.cli.app` (a `typer.Typer`); console script `daiff`.
 
-- [ ] **Step 1: Write `pyproject.toml` and `.python-version`**
+- [x] **Step 1: Write `pyproject.toml` and `.python-version`**
 
 `.python-version` contains `3.12`. `pyproject.toml`:
 
@@ -141,7 +141,7 @@ markers = [
 ]
 ```
 
-- [ ] **Step 2: Write `.env.example` and `README.md`**
+- [x] **Step 2: Write `.env.example` and `README.md`**
 
 `.env.example` (every value empty, with one comment line each): `DAIFF_GEE_PROJECT=`, `DAIFF_DATA_ROOT=`,
 `SMTP_HOST=`, `SMTP_PORT=`, `SMTP_USER=`, `SMTP_PASSWORD=`, `ALERT_EMAIL_TO=`.
@@ -149,7 +149,7 @@ markers = [
 "Quick start" with `uv sync --extra dev`, `uv run pytest -m "not gee and not slow"`, a pointer to
 `CLAUDE.md` and `docs/STATUS.md`, and a "Licence: to be decided by the team (see docs/STATUS.md)" line.
 
-- [ ] **Step 3: Write the failing test** — `tests/test_cli.py`
+- [x] **Step 3: Write the failing test** — `tests/test_cli.py`
 
 ```python
 from typer.testing import CliRunner
@@ -164,24 +164,24 @@ def test_cli_version_prints_package_version():
     assert result.stdout.strip() == f"daiff {__version__}"
 ```
 
-- [ ] **Step 4: Create the environment and run the test to verify it fails**
+- [x] **Step 4: Create the environment and run the test to verify it fails**
 
 Run: `uv sync --extra dev` (uv downloads Python 3.12 if it is missing), then
 `uv run pytest tests/test_cli.py -v`.
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff'` or an import error for `app`.
 
-- [ ] **Step 5: Implement `src/daiff/__init__.py` and `src/daiff/cli.py`**
+- [x] **Step 5: Implement `src/daiff/__init__.py` and `src/daiff/cli.py`**
 
 `__init__.py`: module docstring + `__version__ = "0.1.0"`. `cli.py`: `app = typer.Typer(no_args_is_help=True)`
 with an `@app.callback(invoke_without_command=True)` that has an eager `--version` option printing
 `daiff {__version__}` and exiting 0.
 
-- [ ] **Step 6: Run the tests and lint**
+- [x] **Step 6: Run the tests and lint**
 
 Run: `uv run pytest tests/test_cli.py -v && uv run ruff check . && uv run ruff format --check .`
 Expected: 1 passed; ruff reports no problems (run `uv run ruff format .` first if needed).
 
-- [ ] **Step 7: Close the task**
+- [x] **Step 7: Close the task**
 
 Tick this task, set STATUS "Last done: P0 Task 1", "Next task: P0 Task 2". Then:
 ```bash
@@ -222,7 +222,7 @@ git push origin main
     `synthetic_cfg(tmp_path) -> DaiffConfig` (loaded with `env={"DAIFF_DATA_ROOT": str(tmp_path)}`),
     `small_grid` (added in Task 3).
 
-- [ ] **Step 1: Write the configs**
+- [x] **Step 1: Write the configs**
 
 `configs/synthetic.yaml`:
 ```yaml
@@ -244,7 +244,7 @@ synthetic: {size: 200, subbasin_split: 2}
 res 30, `bounds: null` (comment: "set from the AOI in P3"), buffer_m 1000; years t0 2019 (comment:
 "D-24 — re-check L2A coverage in P3"), years 2019–2026; gee nulls; seed 42; data_root `../data`.
 
-- [ ] **Step 2: Write the failing tests** — `tests/test_config.py` (plus the conftest fixtures above)
+- [x] **Step 2: Write the failing tests** — `tests/test_config.py` (plus the conftest fixtures above)
 
 ```python
 import pytest
@@ -315,21 +315,21 @@ def test_invalid_years_are_rejected(tmp_path, years_line):
 
 Add `tests/__init__.py` (empty) so `from tests.conftest import …` works.
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_config.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff.config'`.
 
-- [ ] **Step 4: Implement `src/daiff/config.py`** with the interfaces above. Apply env overrides to
+- [x] **Step 4: Implement `src/daiff/config.py`** with the interfaces above. Apply env overrides to
 the raw YAML dict before validation (`gee.project`). Compute the effective data root at load time
 and keep it in a private attribute behind the `data_root` property.
 
-- [ ] **Step 5: Run the tests and lint**
+- [x] **Step 5: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass.
 
-- [ ] **Step 6: Close the task** — tick, update STATUS (next: Task 3), then
+- [x] **Step 6: Close the task** — tick, update STATUS (next: Task 3), then
 `git add configs src tests docs` · `git commit -m "feat(config): typed YAML config with portable hashing"` · `git push origin main`.
 
 ---

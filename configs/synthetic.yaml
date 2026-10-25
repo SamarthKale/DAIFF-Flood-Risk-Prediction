@@ -1,0 +1,13 @@
+project: {name: synthetic, basin: synthetic}
+grid:
+  crs: EPSG:32646
+  res: 30
+  bounds: [300000, 2900000, 306000, 2906000]   # 200 x 200 cells
+  buffer_m: 0
+years:
+  t0: 2019
+  years: [2019, 2020, 2021, 2022, 2023, 2024]
+gee: {project: null, asset_root: null}
+runtime: {seed: 42}
+paths: {data_root: ../data}
+synthetic: {size: 200, subbasin_split: 2}
