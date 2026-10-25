@@ -11,6 +11,13 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
 
+## Parallel packages (see docs/PARALLEL_WORK.md)
+
+- P3 Kopili ingestion (live Earth Engine) — Samarth's session — in progress
+- Package A Tier 2 alerts — unassigned
+- Package B What-if scenarios + monthly forest — unassigned
+- Package C U-Net + Tier 3 model code (Colab) — unassigned
+
 ## Phases
 
 | Phase | Scope | Plan | Status |

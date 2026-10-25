@@ -25,6 +25,8 @@ without warning (usage limits). The repository must always say exactly where thi
   task, blockers, CI note) → commit → `git push origin main`.
 - **No plan for the current phase yet?** Write it first (superpowers `writing-plans` skill if
   installed; otherwise copy the structure of an existing plan), commit it, then execute.
+- **Several people at once?** Follow `docs/PARALLEL_WORK.md`: work only in your package's files,
+  `git pull --rebase` before every commit, keep shared-file edits to one-line registrations.
 - **Ending a session deliberately:** make sure STATUS.md's "Next task" is precise enough for a
   stranger to continue.
 
