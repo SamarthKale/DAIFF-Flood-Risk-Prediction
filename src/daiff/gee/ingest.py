@@ -389,18 +389,28 @@ def step_forest(ctx: Ctx) -> None:
     years = ctx.years
     all_years = cfg.years.years  # training pools every year
     hansen = refdata.DATASETS["hansen"]
-    points = forest_rf.training_points(
-        ee, ctx.aoi, all_years, s2.composite, hansen, cfg.runtime.seed
+    # Training samples are fetched per year to a local CSV (cached), then sent inline with the
+    # classification jobs. A batch table export of the same samples failed after ~65 EECU-h.
+    cache = ctx.raw.root.parent / "interim" / "forest_training_points.csv"
+    have = pd.read_csv(cache) if cache.exists() else pd.DataFrame()
+    for y in all_years:
+        if not have.empty and (have["year"] == y).any():
+            continue
+        pts = forest_rf.training_points(ee, ctx.aoi, [y], s2.composite, hansen, cfg.runtime.seed)
+        rows = [f["properties"] for f in pts.getInfo()["features"]]
+        df = pd.DataFrame(rows).assign(year=y)
+        have = pd.concat([have, df], ignore_index=True)
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        have.to_csv(cache, index=False, lineterminator="\n")
+        ctx.log(f"training points {y}: {len(df)} ({df['label'].value_counts().to_dict()})")
+    cols = [*forest_rf.FEATURES, "label"]
+    points = ee.FeatureCollection(
+        [
+            ee.Feature(None, {k: float(r[k]) for k in cols})
+            for r in have[cols].dropna().to_dict("records")
+        ]
     )
     use_assets = _assets_available(ctx)
-    if use_assets:
-        table = asset_id(cfg, "forest_training_points")
-        if not asset_exists(ee, table):
-            task = ee.batch.Export.table.toAsset(points, "forest_training_points", table)
-            task.start()
-            ctx.log("exporting training points")
-            wait_for_tasks(ee, [task.id])
-        points = ee.FeatureCollection(table)
     items = []
     for y in years:
         img = forest_rf.classify(ee, s2.composite(ee, ctx.aoi, y), points, cfg.runtime.seed)
