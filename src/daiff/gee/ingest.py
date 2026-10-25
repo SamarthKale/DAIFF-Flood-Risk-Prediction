@@ -232,10 +232,92 @@ def step_chirps(ctx: Ctx, start_year: int = 2000) -> None:
     df.to_csv(ctx.raw.chirps_daily_csv, index=False, lineterminator="\n")
 
 
+def fill_gaps_from_previous(cur: np.ndarray, prev: np.ndarray | None) -> tuple[np.ndarray, float]:
+    """Cloud gaps (255) take the previous year's class; returns map and residual gap share
+    inside the valid footprint (FR-D2 ≤ 5 %)."""
+    out = cur.copy()
+    if prev is not None:
+        gap = (out == 255) & (prev != 255)
+        out[gap] = prev[gap]
+    footprint = prev != 255 if prev is not None else np.ones(out.shape, bool)
+    share = float(((out == 255) & footprint).sum() / max(footprint.sum(), 1))
+    return out, share
+
+
+def step_forest(ctx: Ctx) -> None:
+    """Random-forest forest / non-forest at 10 m for every year (D-14)."""
+    from daiff.gee import forest_rf
+    from daiff.store.cog import read_raster, write_cog
+
+    ee, cfg = ctx.ee, ctx.cfg
+    years = cfg.years.years
+    hansen = refdata.DATASETS["hansen"]
+    points = forest_rf.training_points(ee, ctx.aoi, years, s2.composite, hansen, cfg.runtime.seed)
+    use_assets = _assets_available(ctx)
+    if use_assets:
+        table = asset_id(cfg, "forest_training_points")
+        if not asset_exists(ee, table):
+            task = ee.batch.Export.table.toAsset(points, "forest_training_points", table)
+            task.start()
+            ctx.log("exporting training points")
+            wait_for_tasks(ee, [task.id])
+        points = ee.FeatureCollection(table)
+    items = []
+    for y in years:
+        img = forest_rf.classify(ee, s2.composite(ee, ctx.aoi, y), points, cfg.runtime.seed)
+        items.append(
+            (
+                f"forest10m_{y}_raw",
+                img,
+                ctx.fine,
+                ctx.raw.forest10m(y),
+                255,
+                f"forest:gee-rf-{forest_rf.N_TREES}t-seed{cfg.runtime.seed}",
+            )
+        )
+    if use_assets:
+        tasks = []
+        for name, image, grid, *_ in items:
+            tasks.append(
+                submit_asset_export(
+                    ee, _filled(image, ctx.aoi, 255), asset_id(cfg, name), grid, name
+                )
+            )
+        wait_for_tasks(ee, tasks)
+        for name, _, grid, path, nodata, tags in items:
+            download_asset(
+                asset_id(cfg, name),
+                grid,
+                path,
+                fetch=getpixels_fetch(ee),
+                nodata=nodata,
+                tags={"DAIFF_SOURCE": tags},
+            )
+    else:
+        _direct_download(ctx, items, tile=1024)
+    prev, report = None, {}
+    for y in years:
+        cur = read_raster(ctx.raw.forest10m(y), ctx.fine)
+        filled, share = fill_gaps_from_previous(cur, prev)
+        if prev is not None:
+            write_cog(
+                ctx.raw.forest10m(y),
+                filled,
+                ctx.fine,
+                nodata=255,
+                tags={"DAIFF_SOURCE": items[0][5], "DAIFF_GAPFILL": "previous-year"},
+            )
+        report[y] = share
+        prev = filled
+        ctx.log(f"forest {y}: residual gap share {share:.2%}")
+    (ctx.raw.root / "fr_d2_gap_share.json").write_text(json.dumps(report, indent=2), "utf-8")
+
+
 STEPS = {
     "static": step_static,
     "coverage": step_coverage,
     "inventory": step_inventory,
     "dw": step_dw,
     "chirps": step_chirps,
+    "forest": step_forest,
 }

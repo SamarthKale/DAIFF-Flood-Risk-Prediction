@@ -88,6 +88,17 @@ def test_download_asset_mosaics_edge_tiles_and_is_idempotent(tmp_path):
     assert len(calls) == n  # second call skipped
 
 
+def test_fill_gaps_from_previous_year():
+    from daiff.gee.ingest import fill_gaps_from_previous
+
+    prev = np.array([[1, 0, 255]], dtype="uint8")
+    cur = np.array([[255, 1, 255]], dtype="uint8")
+    out, share = fill_gaps_from_previous(cur, prev)
+    assert out.tolist() == [[1, 1, 255]] and share == 0.0
+    out0, share0 = fill_gaps_from_previous(cur, None)
+    assert out0.tolist() == cur.tolist() and share0 == pytest.approx(2 / 3)
+
+
 def test_season_window_and_scl_classes():
     assert season_window(2020) == ("2019-11-01", "2020-04-01")
     assert SCL_MASK_CLASSES == (0, 1, 3, 8, 9, 10)
