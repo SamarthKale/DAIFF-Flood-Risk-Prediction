@@ -187,8 +187,8 @@ on behalf of the flood model.
 - `flags(table) -> list[int]` (ids with `risk_class >= 4`).
 - Stage `tables` per year: `subbasin_<y>.csv` (UTF-8, `\n`, no index).
 
-- [ ] Tests: `test_table_has_table25_columns_and_one_row_per_subbasin`; `test_area_classes_sum_to_area`; `test_empty_subbasin_row_is_nan_and_not_flagged` (Review 3); `test_fr_a1_flags_match_risk_map` (flag ⇔ class of mean_s ≥ 4 for all rows).
-- [ ] Commit `feat(tables): sub-basin table (App. C) and FR-A1 flags`; push.
+- [x] Tests: `test_table_has_table25_columns_and_one_row_per_subbasin`; `test_area_classes_sum_to_area`; `test_empty_subbasin_row_is_nan_and_not_flagged` (Review 3); `test_fr_a1_flags_match_risk_map` (flag ⇔ class of mean_s ≥ 4 for all rows).
+- [x] Commit `feat(tables): sub-basin table (App. C) and FR-A1 flags`; push.
 
 ### Task 10: Pipeline wiring — `daiff run`, `daiff watch`, run metadata, end-to-end
 
