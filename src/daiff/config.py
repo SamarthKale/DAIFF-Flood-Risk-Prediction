@@ -82,6 +82,7 @@ class ForestConfig(_Model):
 class TerrainConfig(_Model):
     stream_threshold_km2: float = Field(default=1.0, gt=0)
     major_stream_km2: float = Field(default=50.0, gt=0)
+    routing_dem: Literal["srtm", "merit"] = "srtm"
 
 
 class CouplingConfig(_Model):

@@ -141,6 +141,14 @@ def step_static(ctx: Ctx) -> None:
         [
             ("dem", refdata.dem_image(ee), ctx.grid, r.dem, np.nan, refdata.DATASETS["dem"]),
             (
+                "dem_merit_hydro",
+                refdata.merit_elv_image(ee),
+                ctx.grid,
+                r.dem_hydro,
+                np.nan,
+                refdata.DATASETS["merit_hydro"],
+            ),
+            (
                 "hsg",
                 refdata.hsg_image(ee),
                 ctx.grid,

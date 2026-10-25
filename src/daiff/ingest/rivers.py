@@ -19,7 +19,8 @@ def fetch_osm_rivers(bbox: tuple[float, float, float, float], timeout: float = 3
     import httpx
 
     headers = {
-        "User-Agent": "DAIFF research prototype (github.com/SamarthKale/DAIFF-Flood-Risk-Prediction)",
+        "User-Agent": "DAIFF research prototype "
+        "(github.com/SamarthKale/DAIFF-Flood-Risk-Prediction)",
         "Accept": "application/json",
     }
     r = httpx.post(

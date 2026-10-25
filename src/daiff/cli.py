@@ -259,7 +259,9 @@ def check_streams(config: Path = ConfigOpt) -> None:
         typer.echo("no OSM rivers yet — run `daiff gee ingest --steps rivers`")
         raise typer.Exit(2)
     grid = _grid(cfg)
-    terrain = build_static_features(raw, grid, cfg.terrain.stream_threshold_km2)
+    terrain = build_static_features(
+        raw, grid, cfg.terrain.stream_threshold_km2, cfg.terrain.routing_dem
+    )
     acc = accumulate(terrain.dirs, terrain.bands["elevation"] * 0 + 1, terrain.order)
     major = streams(acc, grid.cell_area_m2, cfg.terrain.major_stream_km2)
     osm = rasterize_lines(json.loads(osm_path.read_text("utf-8")), grid)

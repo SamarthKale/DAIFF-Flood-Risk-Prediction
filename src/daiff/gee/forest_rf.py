@@ -39,7 +39,7 @@ def label_image(ee, year: int, hansen_id: str):
     return ee.Image(255).where(nonforest, 0).where(forest, 1).rename("label").toByte()
 
 
-N_RANDOM_POINTS = 4000  # per year; cost scales with points, not basin area (D-29)
+N_RANDOM_POINTS = 30000  # per year; ~3-5 % get a confident auto label (D-29)
 
 
 def training_points(ee, aoi, years, composite_fn, hansen_id: str, seed: int):

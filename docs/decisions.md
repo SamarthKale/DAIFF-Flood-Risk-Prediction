@@ -35,6 +35,9 @@ rows at the bottom; never rewrite history. If a decision is superseded, add a ne
 | D-26 | 2026-10-25 | Flood-event inventory starts as `reference/flood_events_kopili.csv` with 7 candidates (2017–2025), all `usable=False` until P3 confirms each Sentinel-1 flood extent; train ≤ 2021 currently has only 2020 (+2017/2019 if confirmed) — expect to revisit the temporal split (OI-5) | Sources found for 2020, 2022 (May, June), 2024, 2025; 2017/2019 statewide only | 7.4, OI-5 |
 | D-27 | 2026-10-25 | t0 = 2018 (closes OI-2). GEE S2 L2A over Kopili: 2017 season 75 scenes, 2018 season 128, 2019-2026 322-431, all 8 MGRS tiles. Years 2018-2026. Kopili AOI = HydroBASINS L6 4060884570 (19,705.8 km2, within the SRS 20,000 km2 bound; supersedes the 20,068 km2 concern in D-25); 41 level-8 sub-basins; grid 7155 x 5671 cells (EPSG:32646) | Full-tile coverage from 2018 with a good scene count; 2017 composite would rest on half the scenes. The 2017 flood candidate has no forest map and stays unusable | 3.2, OI-1, OI-2 |
 | D-28 | 2026-10-25 | Hydrologic soil groups from SoilGrids topsoil (0-30 cm, depth-weighted) sand/clay via a TR-55 texture rule (D: clay > 40 %; C: clay 20-40 %; A: sand >= 90 % and clay < 10 %; else B). Supersedes D-12 (HYSOGs is not available as a GEE asset). Earth Engine asset storage is not initialised for the project, so downloads use direct `computePixels` tiles (D-10 fallback) | Back to the SRS's SoilGrids source; over Kopili this gives mostly group C | 3.3, 7.1 |
+| D-29 | 2026-10-25 | Forest RF training samples composites at 30,000 random points per year (not `stratifiedSample` over the basin), and S2 composites keep scenes < 40 % cloudy, at most 12 least-cloudy per MGRS tile per season | The first full-basin stratified sampling burned ~349 EECU-hours (over the 150 h Community quota) before it was cancelled; one-sub-basin test: 0.40 EECU-h per 403 km2 per year | 2.3, 2.7 |
+| D-30 | 2026-10-25 | Flow routing (D8, accumulation, streams, HAND, TWI) on the MERIT Hydro hydrologically adjusted elevation (`MERIT/Hydro/v1_0_1` elv, 90 m -> 30 m bilinear); elevation and slope features stay SRTM | Raw SRTM routes the flat floodplain badly (17-21 % of plains streams within 60 m of OSM vs 38-50 % with MERIT); HAND is the key flood predictor | FR-D4, 3.4 |
+| D-31 | 2026-10-25 | FR-D4 compares derived streams with catchment >= 200 km2 against OSM waterway=river/canal lines | OSM tags smaller channels as streams, which the river/canal query excludes | FR-D4 |
 
 ## Open issues (SRS chapter 10)
 
@@ -44,9 +47,10 @@ rows at the bottom; never rewrite history. If a decision is superseded, add a ne
 | OI-2 | Baseline year t₀ | **Resolved** (D-27) | t₀ = 2018 |
 | OI-3 | Design-rainfall return period | **Adopted** | 10-year, one-day maximum (Gumbel on CHIRPS annual maxima) |
 | OI-4 | HPC node type, GPU hours, NFR-1 budget | Open — guide | Laptop timings recorded meanwhile (D-05) |
-| OI-5 | Flood-event inventory, ≥ 6 usable events | Open — P3 | DFO + ReliefWeb + ASDMA + EMS; `reference/flood_events.csv` |
+| OI-5 | Flood-event inventory, ≥ 6 usable events | **Resolved** (P3) | 6 usable S1-mapped events: 2019, 2020 (train); 2022-05, 2022-06, 2024, 2025 (test). Train set is small — see D-26 |
 | OI-6 | Minimum mapping unit | **Adopted** | 0.5 ha (50 px at 10 m) |
 | OI-7 | Fixed or quantile risk-class breaks | Open — P4 | Fixed 0.2/0.4/0.6/0.8 until calibration |
 | OI-8 | Rainfall alert threshold method | Open — P5 | 99th percentile of wet-day (≥ 1 mm) CHIRPS rainfall per sub-basin |
 | OI-9 | Reconcile Figure 1 / Appendix A with the team presentation | Open — needs the presentation | — |
+| OI-11 | FR-D4 target (90 % of derived streams within 60 m of mapped rivers) is not reachable with 30-90 m DEMs in the Kopili floodplain: best 67.6 % (hills 86-89 %, plains ~50 %). Options for the guide: accept with this evidence, revise the criterion (e.g. hills only, or 150 m), or burn OSM rivers into the DEM (then the check is circular) | Open — guide | Evidence in data/kopili/raw/fr_d4.json and the test log |
 | OI-10 | Confirm Table 16 targets | Open — guide | Targets as written in the SRS |

@@ -110,7 +110,9 @@ def raw_inputs(raw: RawLayout, years) -> list[Path]:
 
 
 def _terrain(p: RunPlan) -> None:
-    terrain = build_static_features(p.raw, p.grid, p.cfg.terrain.stream_threshold_km2)
+    terrain = build_static_features(
+        p.raw, p.grid, p.cfg.terrain.stream_threshold_km2, p.cfg.terrain.routing_dem
+    )
     ins = [p.raw.dem, p.raw.hsg]
     stack = np.stack([terrain.bands[b] for b in STATIC_BANDS]).astype(np.float32)
     write_cog(
@@ -271,7 +273,10 @@ def build_stages(p: RunPlan) -> list[Stage]:
         Stage(
             "terrain",
             lambda _c: _terrain(p),
-            lambda _c: [p.raw.dem, p.raw.hsg, p.raw.subbasins, p.raw.chirps_daily_csv],
+            lambda _c: (
+                [p.raw.dem, p.raw.hsg, p.raw.subbasins, p.raw.chirps_daily_csv]
+                + ([p.raw.dem_hydro] if p.cfg.terrain.routing_dem == "merit" else [])
+            ),
             lambda _c: [s.static_features, p.d8, p.zones, p.rain, s.subbasins_geojson],
             ("terrain", "coupling"),
         ),

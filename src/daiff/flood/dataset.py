@@ -121,7 +121,9 @@ class FloodContext:
 
 def flood_context(cfg: DaiffConfig, raw: RawLayout) -> FloodContext:
     grid = raw.read_grid()
-    terrain = build_static_features(raw, grid, cfg.terrain.stream_threshold_km2)
+    terrain = build_static_features(
+        raw, grid, cfg.terrain.stream_threshold_km2, cfg.terrain.routing_dem
+    )
     zones, names = rasterize_subbasins(raw.subbasins, grid)
     rain = rain_rasters(raw, zones, list(names["subbasin_id"]), cfg.coupling.return_period_years)
     return FloodContext(cfg, raw, grid, terrain, rain, zones, names)

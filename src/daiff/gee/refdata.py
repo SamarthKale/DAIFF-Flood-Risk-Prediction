@@ -14,6 +14,7 @@ DATASETS = {
     "dynamic_world": "GOOGLE/DYNAMICWORLD/V1",
     "worldcover": "ESA/WorldCover/v200",
     "chirps": "UCSB-CHG/CHIRPS/DAILY",
+    "merit_hydro": "MERIT/Hydro/v1_0_1",
     "soilgrids_sand": "projects/soilgrids-isric/sand_mean",
     "soilgrids_clay": "projects/soilgrids-isric/clay_mean",
 }
@@ -65,6 +66,11 @@ def hsg_image(ee):
         .where(clay.gt(40), 4)
     )
     return hsg.updateMask(sand.mask()).toByte()
+
+
+def merit_elv_image(ee):
+    """MERIT Hydro hydrologically adjusted elevation, for flow routing only (D-30)."""
+    return ee.Image(DATASETS["merit_hydro"]).select("elv").resample("bilinear").toFloat()
 
 
 def jrc_image(ee):

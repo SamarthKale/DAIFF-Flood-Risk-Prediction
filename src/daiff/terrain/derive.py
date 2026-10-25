@@ -88,21 +88,29 @@ class Terrain:
     streams: np.ndarray
 
 
-def build_static_features(raw: RawLayout, grid: Grid, stream_threshold_km2: float) -> Terrain:
+def build_static_features(
+    raw: RawLayout, grid: Grid, stream_threshold_km2: float, routing: str = "srtm"
+) -> Terrain:
+    """Static features. `routing="merit"` routes flow on the MERIT Hydro conditioned surface
+    (raw/dem_merit_hydro.tif) while elevation and slope stay SRTM (D-30)."""
     dem = read_raster(raw.dem, grid).astype(np.float64)
     hsg = read_raster(raw.hsg, grid).astype(np.float64)
     hsg[hsg == 255] = np.nan
-    filled = fill_depressions(dem)
+    route = dem
+    if routing == "merit":
+        route = read_raster(raw.dem_hydro, grid).astype(np.float64)
+        route[np.isnan(dem)] = np.nan
+    filled = fill_depressions(route)
     dirs = d8_directions(filled, grid.res)
     order = topological_order(dirs)
-    acc = accumulate(dirs, np.where(np.isnan(dem), np.nan, 1.0), order)
+    acc = accumulate(dirs, np.where(np.isnan(route), np.nan, 1.0), order)
     mask = streams(acc, grid.cell_area_m2, stream_threshold_km2)
-    slope = slope_degrees(filled, grid.res)
+    slope = slope_degrees(fill_depressions(dem), grid.res)
     bands = {
         "elevation": dem,
         "slope": slope,
         "twi": twi(acc, slope, grid.res),
-        "hand": hand(dem, dirs, mask, order),
+        "hand": hand(route, dirs, mask, order),
         "dist_river": distance_to_stream(mask, grid.res),
         "hsg": hsg,
     }

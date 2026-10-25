@@ -1,4 +1,4 @@
-project:
+﻿project:
   name: kopili
   basin: "Kopili, Assam"
   aoi_hybas_id: 4060884570   # HydroBASINS level 6: whole Kopili basin, 19,706 km2
@@ -13,5 +13,6 @@ years:
   t0: 2018              # D-27 (OI-2): 2018 dry season has 128 L2A scenes over all 8 MGRS tiles
   years: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 gee: {project: null, asset_root: null}   # project comes from DAIFF_GEE_PROJECT in .env
+terrain: {routing_dem: merit, major_stream_km2: 200}   # D-30, D-31
 runtime: {seed: 42}
 paths: {data_root: ../data}

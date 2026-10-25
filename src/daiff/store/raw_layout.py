@@ -25,6 +25,11 @@ class RawLayout:
         return self.root / "dem.tif"
 
     @property
+    def dem_hydro(self) -> Path:
+        """Hydrologically conditioned elevation for flow routing (MERIT Hydro, D-30)."""
+        return self.root / "dem_merit_hydro.tif"
+
+    @property
     def hsg(self) -> Path:
         return self.root / "hsg.tif"
 
