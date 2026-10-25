@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P2 API + dashboard — executing (native, in session)
-- **Last done:** P1 complete (12 tasks).
-- **Next task:** P2 Task 1 (API app factory and /api/meta).
+- **Last done:** P2 Tasks 1-5 (API: meta, tiles, sub-basins/exports/flags, point query, metrics, labelling; daiff serve).
+- **Next task:** P2 Task 6 (web scaffold + API client).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.

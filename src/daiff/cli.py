@@ -170,6 +170,21 @@ def bench(
     )
 
 
+@app.command()
+def serve(
+    config: Path = ConfigOpt,
+    host: str = typer.Option("127.0.0.1", help="Bind address"),
+    port: int = typer.Option(8000, help="Port"),
+    reference_dir: Path | None = typer.Option(None, help="Default: <repo>/reference"),
+) -> None:
+    """Serve the API (and the built dashboard from web/dist when present)."""
+    import uvicorn
+
+    from daiff.api.app import create_app
+
+    uvicorn.run(create_app(_load(config), reference_dir=reference_dir), host=host, port=port)
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

@@ -39,30 +39,30 @@ maplibre-gl, @tanstack/react-table, recharts, react-router-dom, vitest + @testin
 - `create_app(cfg: DaiffConfig) -> FastAPI`; `CurrentRun` dependency (run_id, RunStore, years, t0, metrics) — 503 if none.
 - `GET /api/meta` → `{run_id, project, years, t0, layers, legends, metrics: {flood_auc, forest_oa}}`.
 - CLI `daiff serve -c CFG [--port 8000]`.
-- [ ] Tests: meta keys/values on synthetic run; 503 without run (Review 4). Commit `feat(api): app factory and meta`.
+- [x] Tests: meta keys/values on synthetic run; 503 without run (Review 4). Commit `feat(api): app factory and meta`.
 
 ### Task 2: Tiles (FR-V1, NFR-5)
 **Files:** `routers/tiles.py`, `colormaps.py`; `tests/api/test_tiles.py`.
 - `GET /api/tiles/{layer}/{year}/{z}/{x}/{y}.png` with rio-tiler `Reader` (WebMercator TMS), colormap per layer, nodata transparent, `Cache-Control: max-age=3600`; 404 JSON for unknown layer/year/missing file (Review 1); empty tile outside bounds returns transparent 256×256 PNG.
-- [ ] Tests: tile over synthetic centre is PNG 256×256 with non-transparent pixels; unknown layer 404; tile render < 300 ms locally (`time.perf_counter`). Commit `feat(api): COG tile endpoint`.
+- [x] Tests: tile over synthetic centre is PNG 256×256 with non-transparent pixels; unknown layer 404; tile render < 300 ms locally (`time.perf_counter`). Commit `feat(api): COG tile endpoint`.
 
 ### Task 3: Sub-basins and exports (FR-V2, NFR-6)
 **Files:** `routers/subbasins.py`, `routers/export.py`; tests.
 - `GET /api/subbasins?year=` GeoJSON (EPSG:4326, simplified 0.0005°) with Table 25 properties; `GET /api/subbasins/{year}.csv` streams the pipeline file unchanged (`text/csv; charset=utf-8`); `GET /api/export/{layer}/{year}.tif` streams the COG (`Content-Disposition: attachment`); `GET /api/flags?year=`.
-- [ ] Tests: `test_fr_v2_csv_is_byte_identical_to_pipeline`; `test_fr_v2_geotiff_export_has_crs_and_transform` (rasterio open of response bytes == grid); non-ASCII name round-trip (Review 5); flags == `flags(table)`. Commit `feat(api): sub-basin table, exports and flags`.
+- [x] Tests: `test_fr_v2_csv_is_byte_identical_to_pipeline`; `test_fr_v2_geotiff_export_has_crs_and_transform` (rasterio open of response bytes == grid); non-ASCII name round-trip (Review 5); flags == `flags(table)`. Commit `feat(api): sub-basin table, exports and flags`.
 
 ### Task 4: Point query (FR-V3)
 **Files:** `routers/point.py`, `src/daiff/flood/explain.py`; tests.
 - `explain_cell(model, features_row: np.ndarray, names) -> list[tuple[str, float]]` — XGBoost `pred_contribs=True`, top-3 by |contribution|.
 - `GET /api/point?lon=&lat=&year=` → `{row, col, forest_fraction: [{year, value}], susceptibility, risk_class, delta_s, top_features: [{name, contribution, value}]}`; 404 outside grid/nodata (Review 2).
-- [ ] Tests: `test_fr_v3_point_values_match_rasters_at_10_random_points` (seeded); top_features length 3 and names ⊂ FEATURES; outside → 404. Commit `feat(api): point query with top-3 feature contributions`.
+- [x] Tests: `test_fr_v3_point_values_match_rasters_at_10_random_points` (seeded); top_features length 3 and names ⊂ FEATURES; outside → 404. Commit `feat(api): point query with top-3 feature contributions`.
 
 ### Task 5: Metrics and labelling endpoints
 **Files:** `routers/metrics.py`, `routers/labelling.py`, `src/daiff/validation/labels.py`; tests.
 - `GET /api/metrics` → contents of `metrics/*.json`.
 - `GET /api/labelling/points?interpreter=A|B|ADJ` → sample points (from `reference/forest_sample_points_<project>.csv`) + that interpreter's existing labels; `POST /api/labelling/labels` `{point_id, interpreter, label_t0, label_t, note}` (labels: `forest|non_forest|unsure`); `GET /api/labelling/agreement` → kappa, n disagreements, list of points needing adjudication.
 - `LabelStore(csv_path)` with `upsert(...)`, `all() -> pd.DataFrame` (UTF-8, sorted, atomic write via temp file + replace).
-- [ ] Tests: upsert overwrites same (point, interpreter) only (Review 3); agreement kappa matches `cohens_kappa`. Commit `feat(api): metrics and reference-labelling endpoints`.
+- [x] Tests: upsert overwrites same (point, interpreter) only (Review 3); agreement kappa matches `cohens_kappa`. Commit `feat(api): metrics and reference-labelling endpoints`.
 
 ### Task 6: Web scaffold and API client
 **Files:** `web/` via `npm create vite@latest web -- --template react-ts`, then add deps; `web/src/api.ts`, `web/src/types.ts`, `web/vite.config.ts` (proxy `/api` → `http://localhost:8000`), `web/src/App.tsx` (router + nav: Map, Sub-basins, Validation, Labelling), `web/src/components/Banner.tsx`.
