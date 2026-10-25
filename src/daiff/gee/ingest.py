@@ -370,6 +370,22 @@ def step_floods(ctx: Ctx) -> None:
     )
 
 
+def step_preview(ctx: Ctx) -> None:
+    """30 m true-colour composites for the dashboard's Sentinel-2 layer (FR-V1)."""
+    items = [
+        (
+            f"preview_{y}",
+            s2.preview_rgb(ctx.ee, ctx.aoi, y),
+            ctx.grid,
+            ctx.raw.preview(y),
+            0,
+            s2.COLLECTION,
+        )
+        for y in ctx.years
+    ]
+    _export_and_download(ctx, items)
+
+
 def step_rivers(ctx: Ctx) -> None:
     """OSM river/canal network for the FR-D4 check (Overpass API, not Earth Engine)."""
     from daiff.gee.aoi import lonlat_bounds
@@ -476,5 +492,6 @@ STEPS = {
     "cpc": step_cpc,
     "floods": step_floods,
     "rivers": step_rivers,
+    "preview": step_preview,
     "forest": step_forest,
 }

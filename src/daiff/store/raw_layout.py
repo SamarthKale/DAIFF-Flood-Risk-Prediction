@@ -40,6 +40,10 @@ class RawLayout:
     def forest10m(self, year: int) -> Path:
         return self.root / "forest10m" / f"forest10m_{year}.tif"
 
+    def preview(self, year: int) -> Path:
+        """30 m true-colour S2 dry-season composite (uint8 RGB) for the dashboard (FR-V1)."""
+        return self.root / "preview" / f"preview_{year}.tif"
+
     def dw_class(self, year: int) -> Path:
         return self.root / "dw_class" / f"dw_class_{year}.tif"
 

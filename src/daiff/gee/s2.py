@@ -51,6 +51,13 @@ def composite(ee, aoi, year: int):
     return med.addBands([ndvi, nbr]).clip(aoi)
 
 
+def preview_rgb(ee, aoi, year: int):
+    """8-bit true-colour (B4, B3, B2) from the dry-season median; reflectance 0-0.3 -> 1-255
+    (0 is reserved for nodata)."""
+    med = masked_collection(ee, aoi, year).select(["B4", "B3", "B2"]).median()
+    return med.unitScale(0, 0.3).multiply(254).add(1).clamp(1, 255).toByte().clip(aoi)
+
+
 def inventory(ee, aoi, year: int) -> list[dict]:
     """FR-D1: scenes used for a season (id, MGRS tile, date, cloud %)."""
     start, end = season_window(year)
