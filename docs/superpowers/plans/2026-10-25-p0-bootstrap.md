@@ -812,7 +812,7 @@ Expected: all pass.
     `state_dir/<name>.json` (`{"fingerprint": …, "outputs": […]}`) **only after** the stage returns.
     A stage exception is re-raised as `PipelineError(f"stage '{name}' failed")` from the original.
 
-- [ ] **Step 1: Write the failing tests** — `tests/pipeline/test_runner.py`
+- [x] **Step 1: Write the failing tests** — `tests/pipeline/test_runner.py`
 
 ```python
 from dataclasses import replace
@@ -919,22 +919,22 @@ def test_missing_input_is_a_pipeline_error(ctx, tmp_path):
         Runner([s], tmp_path / "state").run(ctx)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/pipeline -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff.pipeline'`.
 
-- [ ] **Step 3: Implement `src/daiff/pipeline/runner.py`** with the interfaces above, and re-export
+- [x] **Step 3: Implement `src/daiff/pipeline/runner.py`** with the interfaces above, and re-export
 them from `pipeline/__init__.py`. Input paths in the fingerprint are relative to `ctx.data_root` when
 possible (POSIX form), so fingerprints are portable between machines. Time each stage with
 `time.perf_counter()`.
 
-- [ ] **Step 4: Run the tests and lint**
+- [x] **Step 4: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass.
 
-- [ ] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(pipeline): fingerprinted stage DAG runner"`, push.
+- [x] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(pipeline): fingerprinted stage DAG runner"`, push.
 
 ---
 
