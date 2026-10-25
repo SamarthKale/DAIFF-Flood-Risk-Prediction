@@ -33,13 +33,14 @@ rows at the bottom; never rewrite history. If a decision is superseded, add a ne
 | D-24 | 2026-10-25 | t₀ = 2019 if GEE S2 L2A covers < 90% of the AOI in the 2017/2018 dry seasons; otherwise 2018 | L2A sparse over India before ~Dec 2018 | 3.2, OI-2 |
 | D-25 | 2026-10-25 | Kopili catchment ≈ 20,068 km² (Wikipedia) is at the SRS's "approximately 5,000–20,000 km²" upper bound; keep the whole basin and record the HydroBASINS area in P3. If compute is tight, restrict to the catchment above Dharamtul and log it | Upstream forest loss (Karbi Anglong, Dima Hasao) and the flooded plains (Nagaon, Morigaon) must both be inside | 1.4, OI-1 |
 | D-26 | 2026-10-25 | Flood-event inventory starts as `reference/flood_events_kopili.csv` with 7 candidates (2017–2025), all `usable=False` until P3 confirms each Sentinel-1 flood extent; train ≤ 2021 currently has only 2020 (+2017/2019 if confirmed) — expect to revisit the temporal split (OI-5) | Sources found for 2020, 2022 (May, June), 2024, 2025; 2017/2019 statewide only | 7.4, OI-5 |
+| D-27 | 2026-10-25 | t0 = 2018 (closes OI-2). GEE S2 L2A over Kopili: 2017 season 75 scenes, 2018 season 128, 2019-2026 322-431, all 8 MGRS tiles. Years 2018-2026. Kopili AOI = HydroBASINS L6 4060884570 (19,705.8 km2, within the SRS 20,000 km2 bound; supersedes the 20,068 km2 concern in D-25); 41 level-8 sub-basins; grid 7155 x 5671 cells (EPSG:32646) | Full-tile coverage from 2018 with a good scene count; 2017 composite would rest on half the scenes. The 2017 flood candidate has no forest map and stays unusable | 3.2, OI-1, OI-2 |
 
 ## Open issues (SRS chapter 10)
 
 | OI | Issue | Status | Resolution / current default |
 |---|---|---|---|
-| OI-1 | Pilot basin and sub-basin layer | **Resolved** (D-02) | Kopili, Assam. HydroBASINS level chosen in P3 for 20–60 sub-basins (default level 8) |
-| OI-2 | Baseline year t₀ | Open — check in P3 | D-24 rule |
+| OI-1 | Pilot basin and sub-basin layer | **Resolved** (D-02, D-27) | Kopili = HydroBASINS L6 4060884570, 19,705.8 km²; 41 level-8 sub-basins |
+| OI-2 | Baseline year t₀ | **Resolved** (D-27) | t₀ = 2018 |
 | OI-3 | Design-rainfall return period | **Adopted** | 10-year, one-day maximum (Gumbel on CHIRPS annual maxima) |
 | OI-4 | HPC node type, GPU hours, NFR-1 budget | Open — guide | Laptop timings recorded meanwhile (D-05) |
 | OI-5 | Flood-event inventory, ≥ 6 usable events | Open — P3 | DFO + ReliefWeb + ASDMA + EMS; `reference/flood_events.csv` |

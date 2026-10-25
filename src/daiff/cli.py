@@ -200,6 +200,47 @@ def gee_check(config: Path = ConfigOpt) -> None:
     typer.echo(f"Earth Engine OK: 1 + 1 = {ee.Number(1).add(1).getInfo()}")
 
 
+@gee_app.command("aoi")
+def gee_aoi(config: Path = ConfigOpt) -> None:
+    """Write raw/subbasins.geojson and raw/grid.json for the HydroBASINS AOI; print grid bounds."""
+    from daiff.gee.aoi import lonlat_bounds, utm_bounds, write_subbasins
+    from daiff.gee.auth import init_ee
+    from daiff.grid import Grid
+    from daiff.store.raw_layout import RawLayout
+
+    cfg = _load(config)
+    p = cfg.project
+    if p.aoi_hybas_id is None:
+        typer.echo("project.aoi_hybas_id is not set in the config")
+        raise typer.Exit(2)
+    ee = init_ee(cfg)
+    raw = RawLayout(cfg.data_root)
+    info = write_subbasins(ee, p.aoi_hybas_id, p.aoi_hybas_level, p.subbasin_level, raw.subbasins)
+    bounds = utm_bounds(lonlat_bounds(ee, p.aoi_hybas_id, p.aoi_hybas_level), cfg.grid.crs)
+    grid = Grid.from_bounds(cfg.grid.crs, bounds, cfg.grid.res, cfg.grid.buffer_m)
+    raw.write_grid(grid)
+    typer.echo(f"{info['count']} sub-basins, {info['area_km2']:.1f} km2 -> {raw.subbasins}")
+    typer.echo(f"grid {grid.width} x {grid.height} cells; bounds {[round(b) for b in grid.bounds]}")
+
+
+@gee_app.command("ingest")
+def gee_ingest(
+    config: Path = ConfigOpt,
+    steps: str = typer.Option("static,coverage,inventory,dw,chirps", help="Comma-separated steps"),
+) -> None:
+    """Export from Earth Engine and download into the raw layout (idempotent per step)."""
+    from daiff.gee.auth import init_ee
+    from daiff.gee.ingest import STEPS, make_ctx
+
+    cfg = _load(config)
+    ctx = make_ctx(init_ee(cfg), cfg, log=typer.echo)
+    for name in steps.split(","):
+        if name not in STEPS:
+            typer.echo(f"unknown step {name}; choose from {', '.join(STEPS)}")
+            raise typer.Exit(2)
+        STEPS[name](ctx)
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

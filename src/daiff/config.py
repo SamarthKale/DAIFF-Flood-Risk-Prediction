@@ -25,6 +25,9 @@ class _Model(BaseModel):
 class ProjectConfig(_Model):
     name: str = Field(pattern=r"^[a-z0-9_-]+$")
     basin: str
+    aoi_hybas_id: int | None = None  # HydroBASINS basin that is the AOI (P3)
+    aoi_hybas_level: int = Field(default=6, ge=1, le=12)
+    subbasin_level: int = Field(default=8, ge=1, le=12)
 
 
 class GridConfig(_Model):
