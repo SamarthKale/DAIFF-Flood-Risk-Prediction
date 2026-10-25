@@ -28,8 +28,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 - [x] **Samarth:** create the public GitHub repository — done:
       `SamarthKale/DAIFF-Flood-Risk-Prediction`.
-- [ ] **Every teammate:** register a free non-commercial Google Earth Engine project (steps will
-      be in `docs/setup/gee.md`, written in P0), put the project ID in `.env`, and run
+- [ ] **Every teammate:** register a free non-commercial Google Earth Engine project (steps:
+      `docs/setup/gee.md`), put the project ID in `.env`, and run
       `earthengine authenticate` yourself.
 - [ ] **Team:** choose a code licence (proposal: MIT) — needed for NFR-7.
 - [ ] **Team (P4):** label 600 reference points on the Labelling page (two interpreters + one

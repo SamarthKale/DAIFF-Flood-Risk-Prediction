@@ -41,6 +41,7 @@ It prints `2`. From P3 on you can also run `uv run daiff gee check -c configs/ko
 
 ```python
 import ee
+
 ee.Authenticate()
 ee.Initialize(project="<your-project-id>")
 ```
