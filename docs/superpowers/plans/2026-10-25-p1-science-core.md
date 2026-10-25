@@ -90,8 +90,8 @@ on behalf of the flood model.
 - `STATIC_BANDS = ("elevation", "slope", "twi", "hand", "dist_river", "hsg")`; `build_static_features(raw: RawLayout, grid: Grid, cfg) -> dict[str, np.ndarray]` also returns `dirs`, `order`, `streams` for later stages.
 - Stage `terrain` (outputs `RunStore.static_features` multiband with `STATIC_BANDS` + `data_root/interim/d8.tif` (uint8) + `interim/streams.tif`).
 
-- [ ] Tests: `test_slope_of_plane` (dz/dx = 0.1 on 30 m → 5.71°±0.01); `test_hand_zero_on_streams_and_height_above_downstream_stream` (east-tilted plane with stream at east column: HAND = elevation − elevation of that row's stream cell); `test_hand_nan_when_no_stream_downstream`; `test_distance_to_stream_in_metres` (single stream column → distances 0, 30, 60); `test_twi_increases_with_accumulation`.
-- [ ] Implement; commit `feat(terrain): slope, TWI, streams, HAND, distance and static stage`; push.
+- [x] Tests: `test_slope_of_plane` (dz/dx = 0.1 on 30 m → 5.71°±0.01); `test_hand_zero_on_streams_and_height_above_downstream_stream` (east-tilted plane with stream at east column: HAND = elevation − elevation of that row's stream cell); `test_hand_nan_when_no_stream_downstream`; `test_distance_to_stream_in_metres` (single stream column → distances 0, 30, 60); `test_twi_increases_with_accumulation`.
+- [x] Implement; commit `feat(terrain): slope, TWI, streams, HAND, distance and static stage`; push.
 
 ### Task 4: Forest — fraction, loss with MMU, regrowth, sub-basin raster and stats
 
