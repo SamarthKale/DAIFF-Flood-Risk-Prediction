@@ -123,6 +123,15 @@ cd web && npm ci && npm run dev               # dashboard on http://localhost:51
   synthetic basin for anything end to end.
 - **Web:** TypeScript strict, function components, Vitest; the API base URL comes from env.
 
+## Where things live
+
+- **Git (GitHub):** code, docs, configs, tests, `reference/`. 
+- **`data/` (NOT in git, ~7 GB for Kopili):** raw downloads, run outputs, models. Back it up
+  (copy the folder) before changing machines; regenerating costs Earth Engine quota.
+- **Per machine:** Earth Engine login (`~/.config/earthengine`), `.env` (your project ID), `.venv`.
+- **Earth Engine quota** (Community: 150 EECU-h/month): measure cost on one sub-basin before any
+  full-basin job. Never use `stratifiedSample` over the whole basin (D-29).
+
 ## Machine notes
 
 - On Samarth's laptop the repo lives on an **exFAT external drive (D:)**. Git needs
