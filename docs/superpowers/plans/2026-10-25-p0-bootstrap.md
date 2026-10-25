@@ -635,7 +635,7 @@ names as a tag `DAIFF_BAND_NAMES` (JSON list) and read them from there in `read_
   - `@dataclass(frozen=True) class MetadataProblem: path: Path; problem: str`
   - `check_metadata(run_dir: Path) -> list[MetadataProblem]` — every `*.tif` must carry every `REQUIRED_TAGS` key with a non-empty value; `run_metadata.json` must exist and contain every `RUN_METADATA_KEYS` key.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tests/store/test_provenance.py`:
 ```python
@@ -773,21 +773,21 @@ def test_nfr_4_flags_missing_run_metadata_file(tmp_path, small_grid):
     assert [p.path.name for p in check_metadata(store.run_dir)] == ["run_metadata.json"]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/store -v`
 Expected: the new tests FAIL with import errors; the Task 4 tests still pass.
 
-- [ ] **Step 3: Implement `provenance.py`, `run_store.py`, `check.py`** with the interfaces above
+- [x] **Step 3: Implement `provenance.py`, `run_store.py`, `check.py`** with the interfaces above
 (`subprocess.run(..., capture_output=True, text=True)` for git; treat `FileNotFoundError` and non-zero
 exit as `"unknown"`). Extend `store/__init__.py` re-exports.
 
-- [ ] **Step 4: Run the tests and lint**
+- [x] **Step 4: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass.
 
-- [ ] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(store): provenance tags, run store and NFR-4 metadata check"`, push.
+- [x] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(store): provenance tags, run store and NFR-4 metadata check"`, push.
 
 ---
 
