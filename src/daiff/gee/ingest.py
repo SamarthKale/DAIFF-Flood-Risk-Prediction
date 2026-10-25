@@ -386,6 +386,30 @@ def step_preview(ctx: Ctx) -> None:
     _export_and_download(ctx, items)
 
 
+def step_cloudcheck(ctx: Ctx, years=(2018, 2022, 2026), n: int = 20) -> None:
+    """FR-D2 human check: 20 random 1 km windows per sample season -> review/fr_d2.html."""
+    from daiff.gee import review
+    from daiff.store.cog import read_raster
+
+    dem = read_raster(ctx.raw.dem, ctx.grid)
+    spots = review.pick_windows(~np.isnan(dem), ctx.grid, n, ctx.cfg.runtime.seed)
+    items = []
+    for y in years:
+        if y not in ctx.cfg.years.years:
+            continue
+        for i, (x, yy) in enumerate(spots, start=1):
+            rgb = review.fetch_window(ctx.ee, ctx.aoi, y, x, yy, ctx.grid.crs)
+            lon, lat = review.lonlat(ctx.grid, x, yy)
+            items.append(
+                {"id": i, "year": y, "lon": lon, "lat": lat, "img": review.to_data_uri(rgb)}
+            )
+        ctx.log(f"cloud-check windows {y}: {len(spots)}")
+    out = ctx.cfg.data_root / "review" / "fr_d2.html"
+    review.build_page(items, out, ctx.cfg.project.name)
+    review.save_windows_json(items, out.with_suffix(".json"))
+    ctx.log(f"open {out} in a browser, mark each window, download the CSV")
+
+
 def step_rivers(ctx: Ctx) -> None:
     """OSM river/canal network for the FR-D4 check (Overpass API, not Earth Engine)."""
     from daiff.gee.aoi import lonlat_bounds
@@ -493,5 +517,6 @@ STEPS = {
     "floods": step_floods,
     "rivers": step_rivers,
     "preview": step_preview,
+    "cloudcheck": step_cloudcheck,
     "forest": step_forest,
 }
