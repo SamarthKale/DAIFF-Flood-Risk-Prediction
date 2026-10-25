@@ -9,6 +9,7 @@ from daiff.store.provenance import (
     compute_run_id,
     sha256_file,
 )
+from daiff.store.raw_layout import RawLayout
 from daiff.store.run_store import (
     RUN_METADATA_KEYS,
     RunStore,
@@ -22,6 +23,7 @@ __all__ = [
     "RUN_METADATA_KEYS",
     "GridMismatchError",
     "MetadataProblem",
+    "RawLayout",
     "RunStore",
     "build_tags",
     "check_metadata",

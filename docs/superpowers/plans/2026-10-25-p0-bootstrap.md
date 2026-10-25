@@ -1100,7 +1100,7 @@ Expected: all pass, and the synthetic tests take under 30 s.
     none: `no published run under <data_root>/store — run the pipeline first` (exit 2). Prints
     `NFR-4 PASS: <run_id>` (exit 0) or `NFR-4 FAIL` plus one line per problem (exit 1).
 
-- [ ] **Step 1: Write the failing tests** (append to `tests/test_cli.py`)
+- [x] **Step 1: Write the failing tests** (append to `tests/test_cli.py`)
 
 ```python
 import numpy as np
@@ -1153,22 +1153,22 @@ Add `test_nfr_4_check_metadata_passes_on_published_run(tmp_path, small_grid)`. I
 `publish(tmp_path / "synthetic", "abc123def456")`, runs `check-metadata` with `_env(tmp_path)`, and
 asserts exit 0 with `"NFR-4 PASS"` in stdout.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_cli.py -v`
 Expected: the new tests FAIL with "No such command".
 
-- [ ] **Step 3: Implement the three commands** in `src/daiff/cli.py` with the behaviour and exact
+- [x] **Step 3: Implement the three commands** in `src/daiff/cli.py` with the behaviour and exact
 messages above (`typer.echo`; `raise typer.Exit(code)`).
 
-- [ ] **Step 4: Run the full suite, lint, and try the CLI by hand**
+- [x] **Step 4: Run the full suite, lint, and try the CLI by hand**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 then `uv run daiff synth -c configs/synthetic.yaml && uv run daiff check-grid -c configs/synthetic.yaml`
 Expected: all tests pass; the CLI prints `FR-D5 PASS: 15 layers aligned` (dem, hsg, jrc + 6 dw_class
 at 30 m; 6 forest10m at 10 m), and data lands in `data/synthetic/raw/` (gitignored).
 
-- [ ] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(cli): synth, check-grid (FR-D5) and check-metadata (NFR-4)"`, push.
+- [x] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(cli): synth, check-grid (FR-D5) and check-metadata (NFR-4)"`, push.
 
 ---
 
