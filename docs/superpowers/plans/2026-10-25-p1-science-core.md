@@ -108,8 +108,8 @@ on behalf of the flood model.
 - `hansen_comparison(ours_ha: float, hansen_ha: float) -> dict` (`diff_pct`, `within_25pct`).
 - Stage `forest` per year: `forest_<y>.tif`, `loss10m_<t0>_<y>.tif`, `loss_<t0>_<y>.tif`, `regrowth_<t0>_<y>.tif`, copy `forest10m_<y>.tif` into the run.
 
-- [ ] Tests: `test_forest_fraction_ignores_nodata` (block with 3 forest, 3 non-forest, 3×255 → 0.5; all 255 → NaN); `test_fr_f4_loss_patches_below_mmu_removed` (one 8×8 patch=64 px kept, one 7×7=49 px removed, diagonal-touching pixels count as connected); `test_fr_f3_hectares_equal_loss_pixel_sum` (sum of per-subbasin ha == mask.sum()·0.01 within 0.5% — exact); `test_rasterize_subbasins_synthetic_quadrants` (4 ids, each 100×100 cells); `test_zonal_mean_keeps_empty_zone_as_nan`.
-- [ ] Implement; commit `feat(forest): forest fraction, MMU-filtered loss and sub-basin stats`; push.
+- [x] Tests: `test_forest_fraction_ignores_nodata` (block with 3 forest, 3 non-forest, 3×255 → 0.5; all 255 → NaN); `test_fr_f4_loss_patches_below_mmu_removed` (one 8×8 patch=64 px kept, one 7×7=49 px removed, diagonal-touching pixels count as connected); `test_fr_f3_hectares_equal_loss_pixel_sum` (sum of per-subbasin ha == mask.sum()·0.01 within 0.5% — exact); `test_rasterize_subbasins_synthetic_quadrants` (4 ids, each 100×100 cells); `test_zonal_mean_keeps_empty_zone_as_nan`.
+- [x] Implement; commit `feat(forest): forest fraction, MMU-filtered loss and sub-basin stats`; push.
 
 ### Task 5: Coupling C1–C3 (FR-C1)
 
