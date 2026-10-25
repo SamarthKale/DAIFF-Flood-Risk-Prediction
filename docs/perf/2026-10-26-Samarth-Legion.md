@@ -1,0 +1,30 @@
+| machine | cores | RAM GB | workers | stage | seconds | run_id | commit |
+|---|---|---|---|---|---|---|---|
+| Samarth-Legion | 20 | – | 2 | terrain | 97.1 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | forest | 332.9 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | coupling | 324.6 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | train | 143.4 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | predict | 474.6 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | tables | 327.3 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | total | 1700.0 | 806cb272d463 | a8e3061dabf4 |
+| Samarth-Legion | 20 | – | 2 | terrain | 183.7 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | forest | 473.6 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | coupling | 432.2 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | train | 218.1 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | predict | 478.4 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | tables | 404.8 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | total | 2190.8 | e45664dd1bb4 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | terrain | 95.6 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | forest | 318.9 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | coupling | 290.9 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | train | 151.2 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | predict | 290.9 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | tables | 283.3 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | total | 1430.9 | 80f819fb49b2 | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | terrain | 98.6 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | forest | 321.0 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | coupling | 289.4 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | train | 138.8 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | predict | 339.6 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | tables | 275.4 | 0d24afb6480d | 4f40320d7472 |
+| Samarth-Legion | 20 | – | 2 | total | 1462.8 | 0d24afb6480d | 4f40320d7472 |

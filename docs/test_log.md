@@ -20,3 +20,14 @@ Rules:
 | 2026-10-25 | FR-D1 | T | kopili / raw ingest | PASS (evidence): every season 2018-2026 has scenes from all 8 MGRS tiles intersecting the AOI (128-431 scenes) | data/kopili/raw/s2_inventory_<year>.csv | daiff gee ingest --steps inventory |
 | 2026-10-26 | FR-D2 | I, T | kopili / raw ingest | PASS (gap part): masked gaps 0.049 % of the basin every year 2018-2026 (<= 5 %); 20 random 1 km windows listed for the human visual cloud check (pending) | data/kopili/raw/fr_d2_gap_share.json | daiff gee ingest --steps forest |
 | 2026-10-26 | FR-D5 | T | kopili / raw ingest | PASS: 21 raw layers incl. 9 forest10m maps on the nested 10 m grid | daiff check-grid | daiff check-grid |
+| 2026-10-26 | FR-R2 | A | kopili / 806cb272d463 / a8e3061dabf4 | FAIL: AUC 0.630 (HAND 0.516); flooded in 4-5 0.58, area 0.02 | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R3 | A | kopili / 806cb272d463 / a8e3061dabf4 | PASS: ablation dAUC 0.009 [0.008, 0.010] | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R2 | A | kopili / 806cb272d463 / a8e3061dabf4 | FAIL: AUC 0.762 (HAND 0.516); flooded in 4-5 0.57, area 0.02 | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R3 | A | kopili / 806cb272d463 / a8e3061dabf4 | PASS: ablation dAUC 0.019 [0.019, 0.020] | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R2 | A | kopili / e45664dd1bb4 / 4f40320d7472 | FAIL: AUC 0.762 (HAND 0.516); flooded in 4-5 0.57, area 0.03 | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R3 | A | kopili / e45664dd1bb4 / 4f40320d7472 | PASS: ablation dAUC 0.019 [0.019, 0.020] | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R2 | A | kopili / 80f819fb49b2 / 4f40320d7472 | FAIL: AUC 0.753 (HAND 0.516); flooded in 4-5 0.56, area 0.03 | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R3 | A | kopili / 80f819fb49b2 / 4f40320d7472 | PASS: ablation dAUC 0.020 [0.019, 0.020] | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-D2 | I | kopili / raw ingest / 4f40320 | FAIL (visual part): reviewer Samarth, 20 windows per season: 2018 14/20 clean, 2022 18/20, 2026 18/20 (need 18/20 each). Raised as OI-13 | data/kopili/review/fr_d2.html + fr_d2_review_Samarth.csv | daiff.gee.review.score_review |
+| 2026-10-26 | FR-R2 | A | kopili / 0d24afb6480d / 4f40320d7472 | FAIL: AUC 0.762 (HAND 0.516); flooded in 4-5 0.57, area 0.03 | metrics/flood.json | daiff validate |
+| 2026-10-26 | FR-R3 | A | kopili / 0d24afb6480d / 4f40320d7472 | PASS: ablation dAUC 0.019 [0.019, 0.020] | metrics/flood.json | daiff validate |

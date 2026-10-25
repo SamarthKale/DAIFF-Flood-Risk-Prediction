@@ -7,7 +7,7 @@ One row per requirement in [`srs/requirements.md`](srs/requirements.md). Status 
 | Requirement | Tier | Method | Artifact | Phase | Status |
 |---|---|---|---|---|---|
 | FR-D1 | 1 | T | `raw/s2_inventory_<year>.csv` vs catalogue query (`daiff gee`) | P3 | evidence logged (all 8 MGRS tiles every season 2018-2026) |
-| FR-D2 | 1 | I, T | `raw/fr_d2_<year>.json` gap share + 20-window visual check | P3 | not started |
+| FR-D2 | 1 | I, T | `raw/fr_d2_<year>.json` gap share + 20-window visual check | P3 | **FAIL** 2018 14/20 clean; 2022, 2026 18/20; gaps 0.049 % pass (OI-13) |
 | FR-D3 | 1 | T | `raw/rainfall/gaps.csv` (CPC + CHIRPS) | P3 | **accepted** (Kopili CPC + CHIRPS, 0 gaps > 3 days) |
 | FR-D4 | 1 | A | `daiff check-streams` (≥ 90% within 60 m of OSM rivers) | P1/P3 | **FAIL** 67.6 % vs 90 % (OI-11, needs guide decision) |
 | FR-D5 | 1 | T | `tests/test_grid.py::test_fr_d5_*`, `daiff check-grid` | P0/P3 | passing on Kopili raw layers (forest10m pending) |
@@ -21,8 +21,8 @@ One row per requirement in [`srs/requirements.md`](srs/requirements.md). Status 
 | FR-C3 | 1 | T | `tests/flood/test_predict.py::test_fr_c3_*` | P1 | passing (synthetic) |
 | FR-C4 | 1 | T | `tests/flood/test_predict.py::test_fr_c4_*` | P1 | passing (synthetic) |
 | FR-R1 | 1 | D | `daiff train`, `tests/flood/test_model.py::test_fr_r1_*` | P1/P4 | passing (synthetic); demo in P4 |
-| FR-R2 | 1 | A | `daiff validate --what flood` (AUC ≥ 0.80, ≥ HAND + 0.05) | P4 | not started |
-| FR-R3 | 1 | A | ablation + permutation importance in `metrics/flood.json` | P1/P4 | passing (synthetic) |
+| FR-R2 | 1 | A | `daiff validate --what flood` (AUC ≥ 0.80, ≥ HAND + 0.05) | P4 | **FAIL** real Kopili loeo AUC 0.762 vs HAND 0.516 (+0.246); misses 0.80 (OI-12) |
+| FR-R3 | 1 | A | ablation + permutation importance in `metrics/flood.json` | P1/P4 | passing (synthetic); real Kopili dAUC +0.019 [0.019, 0.020] |
 | FR-R4 | 2 | A | POD/FAR on held-out event days | P5 | not started |
 | FR-R5 | 2 | T | 10% scenario < 5 min | P5 | not started |
 | FR-R6 | 3 | A | `docs/results/tier3_fusion.md` | P6 | not started |

@@ -427,6 +427,9 @@ def run_pipeline(
             "model_id": model,
         },
     )
+    for y in p.years:  # optional Sentinel-2 true-colour previews for the dashboard
+        if p.raw.preview(y).exists():
+            shutil.copyfile(p.raw.preview(y), p.store.preview(y))
     if stages is None or "tables" in stages:
         publish(cfg.data_root, p.store.run_id)
     if log_perf:

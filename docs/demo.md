@@ -49,7 +49,7 @@ Open http://localhost:8000
 - **Labelling:** how the 600 reference points get labelled (two interpreters + adjudicator).
 
 ## 5. Honest status (1 min)
-Passing on real Kopili data: FR-D2 (gaps), FR-D3, FR-D5. **FR-D4 fails (67.6 % vs 90 %, OI-11)** —
+Passing on real Kopili data: FR-D2 (gaps), FR-D3, FR-D5. **FR-D4 fails (67.6 % vs 90 %, OI-11); FR-D2 visual 2018 fails (OI-13); flood AUC 0.762 vs 0.80 (OI-12)** —
 needs the guide. Tier 1 accuracy (FR-F1/F2/R2) waits for the hand-labelled points (P4).
 Tier 2 and Tier 3 are packaged for teammates in `docs/PARALLEL_WORK.md`.
 

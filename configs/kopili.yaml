@@ -16,3 +16,4 @@ gee: {project: null, asset_root: null}   # project comes from DAIFF_GEE_PROJECT 
 terrain: {routing_dem: merit, major_stream_km2: 200}   # D-30, D-31
 runtime: {seed: 42}
 paths: {data_root: ../data}
+flood: {strategy: loeo}   # D-32: leave-one-event-out (regularised variants scored lower on block CV: D-33)

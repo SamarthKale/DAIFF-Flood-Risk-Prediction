@@ -1,19 +1,19 @@
 # DAIFF — Build Status
 
-_Last updated: 2026-10-25 — Samarth's machine (Claude session)_
+_Last updated: 2026-10-26 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P3 Kopili ingestion — live, forest classification running
-- **Last done:** P3 live ingestion: AOI (41 sub-basins), grid, static layers, MERIT routing, Dynamic World 2018-2026, CHIRPS + NOAA CPC (FR-D3 pass), S2 inventory (FR-D1), S1 floods (6 usable events, OI-5 closed), OSM rivers (FR-D4 fails 67.6 %, OI-11), terrain stage on Kopili (1.7 min).
-- **Next task:** finish `daiff gee ingest --steps forest` (9 years, 10 m RF; ~82 EECU-h est.), then `daiff check-grid` + first full `daiff run -c configs/kopili.yaml`, then close P3 and hand out docs/PARALLEL_WORK.md.
+- **Phase:** P3 Kopili ingestion — **done** (2026-10-26). Next: P4
+- **Last done:** P3 closed. All Kopili raw layers, 9 forest maps, S2 previews, full `daiff run` (loeo flood model) published. Real results: FR-D3, FR-D5 pass; FR-D4 67.6 % (OI-11), FR-D2 2018 visual 14/20 (OI-13), FR-R2 AUC 0.762 vs HAND 0.516 (OI-12) — all raised for the guide.
+- **Next task:** P4 — refine the plan (`docs/superpowers/plans/2026-10-25-p4-p7-acceptance-tier2-tier3-closeout.md`): label the 600 reference points (humans), forest accuracy (FR-F1/F2), fix 2018 cloud mask (OI-13), more flood events / U-Net on Colab (OI-12). Send docs/PARALLEL_WORK.md packages A/B/C to friends.
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
 
 ## Parallel packages (see docs/PARALLEL_WORK.md)
 
-- P3 Kopili ingestion (live Earth Engine) — Samarth's session — in progress
+- P3 Kopili ingestion (live Earth Engine) — Samarth's session — done
 - Package A Tier 2 alerts — unassigned
 - Package B What-if scenarios + monthly forest — unassigned
 - Package C U-Net + Tier 3 model code (Colab) — unassigned
@@ -25,7 +25,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 | P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | **done** |
 | P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | [plan](superpowers/plans/2026-10-25-p1-science-core.md) | **done** |
 | P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | [plan](superpowers/plans/2026-10-25-p2-api-dashboard.md) | **done** |
-| P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | [plan](superpowers/plans/2026-10-25-p3-kopili-ingestion.md) | not started |
+| P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | [plan](superpowers/plans/2026-10-25-p3-kopili-ingestion.md) | **done** |
 | P4 Tier 1 acceptance | real runs, validation, U-Net challenger, NFR checks, test log | [plan](superpowers/plans/2026-10-25-p4-p7-acceptance-tier2-tier3-closeout.md) | not started (refine at start) |
 | P5 Tier 2 | monthly forest, rainfall risk, what-if, alerts | same file | not started (refine at start) |
 | P6 Tier 3 | SAR–optical fusion, 1–7 day forecaster (Colab) | same file | not started (refine at start) |
@@ -62,6 +62,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-26 | Samarth + Claude | P3 closed: real Kopili run, loeo flood AUC 0.762, FR-D2 2018 fails visual check, previews done |
 | 2026-10-25 | Samarth + Claude | P2 API + dashboard done (FastAPI + React/MapLibre; NFR-5 server-side 0.13-0.20 s) |
 | 2026-10-25 | Samarth + Claude | P1 science core executed (12 tasks, 125 tests); synthetic AUC 0.999 vs HAND 0.709 |
 | 2026-10-25 | Samarth + Claude | P0 bootstrap executed (10 tasks, 57 tests) |
