@@ -960,7 +960,7 @@ Expected: all pass.
   - `make_basin(cfg: DaiffConfig) -> RawLayout` — requires `cfg.synthetic`, otherwise `ValueError`.
     Deterministic for a given `cfg.runtime.seed`. Raw rasters carry tags `{"DAIFF_SOURCE": "synthetic", "DAIFF_SEED": str(seed)}`.
 
-- [ ] **Step 1: Write the failing tests** — `tests/integration/test_synthetic.py`
+- [x] **Step 1: Write the failing tests** — `tests/integration/test_synthetic.py`
 
 ```python
 import hashlib
@@ -1045,14 +1045,14 @@ def test_rainfall_is_gap_free_from_2000(basin):
     assert (df["precip_mm"] >= 0).all() and np.isfinite(df["precip_mm"]).all()
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/integration/test_synthetic.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff.synthetic'`.
 
-- [ ] **Step 3: Implement `RawLayout`** in `src/daiff/store/raw_layout.py` (grid.json = `grid.to_dict()` plus `"nested_factor": 3`).
+- [x] **Step 3: Implement `RawLayout`** in `src/daiff/store/raw_layout.py` (grid.json = `grid.to_dict()` plus `"nested_factor": 3`).
 
-- [ ] **Step 4: Implement `make_basin`** in `src/daiff/synthetic.py`. Use one `np.random.default_rng(seed)`
+- [x] **Step 4: Implement `make_basin`** in `src/daiff/synthetic.py`. Use one `np.random.default_rng(seed)`
 for everything. With N = `cfg.synthetic.size`, row r (north→south), col c, `x = c/(N−1) − 0.5`, `y = r/(N−1)`:
 - **DEM**: `z = 400 − 250·y + 120·|x|^1.2 + noise(σ=0.5)`. Carve the channel column `c = N//2` down
   by 5 m and force it to strictly decrease southward, so `(N−1, N//2)` is the global minimum.
@@ -1071,12 +1071,12 @@ for everything. With N = `cfg.synthetic.size`, row r (north→south), col c, `x 
   probability 0.15 + 0.6·monsoon (monsoon = month in 6–9); amount ~ Gamma(shape 0.8, scale 12 + 25·monsoon)
   when wet, else 0, rounded to 0.1 mm.
 
-- [ ] **Step 5: Run the tests and lint**
+- [x] **Step 5: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass, and the synthetic tests take under 30 s.
 
-- [ ] **Step 6: Close the task** — tick, STATUS, `git commit -m "feat(synthetic): raw-input layout and deterministic synthetic basin"`, push.
+- [x] **Step 6: Close the task** — tick, STATUS, `git commit -m "feat(synthetic): raw-input layout and deterministic synthetic basin"`, push.
 
 ---
 
