@@ -99,6 +99,13 @@ def test_fill_gaps_from_previous_year():
     assert out0.tolist() == cur.tolist() and share0 == pytest.approx(2 / 3)
 
 
+def test_event_windows():
+    from daiff.gee.ingest import event_windows
+
+    pre, ev = event_windows("2022-06-12", "2022-06-28")
+    assert pre == ("2022-04-13", "2022-05-23") and ev == ("2022-06-12", "2022-06-29")
+
+
 def test_season_window_and_scl_classes():
     assert season_window(2020) == ("2019-11-01", "2020-04-01")
     assert SCL_MASK_CLASSES == (0, 1, 3, 8, 9, 10)

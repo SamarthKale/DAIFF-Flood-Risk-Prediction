@@ -270,6 +270,95 @@ def step_cpc(ctx: Ctx, start_year: int = 2000) -> None:
     ctx.log(f"CPC: {len(df)} sub-basin-days, {len(gaps)} gaps > 3 days -> {out}")
 
 
+def event_windows(start: str, end: str) -> tuple[tuple[str, str], tuple[str, str]]:
+    """Pre-event reference window (60–20 days before) and the event window."""
+    s = pd.Timestamp(start)
+    pre = (
+        (s - pd.Timedelta(days=60)).strftime("%Y-%m-%d"),
+        (s - pd.Timedelta(days=20)).strftime("%Y-%m-%d"),
+    )
+    event = (start, (pd.Timestamp(end) + pd.Timedelta(days=1)).strftime("%Y-%m-%d"))
+    return pre, event
+
+
+def step_floods(ctx: Ctx) -> None:
+    """Sentinel-1 flooded fraction (30 m) per candidate event; writes raw/flood_events.csv."""
+    from daiff.gee import s1_flood
+    from daiff.pipeline.stages import REPO_ROOT
+    from daiff.store.cog import read_raster
+
+    ee, cfg = ctx.ee, ctx.cfg
+    ref = pd.read_csv(REPO_ROOT / "reference" / f"flood_events_{cfg.project.name}.csv")
+    rows, items = [], []
+    for ev in ref.itertuples():
+        pre, event = event_windows(ev.start, ev.end)
+        n_pre = s1_flood.scenes_in_window(ee, ctx.aoi, pre)
+        n_ev = s1_flood.scenes_in_window(ee, ctx.aoi, event)
+        row = ev._asdict()
+        row.pop("Index")
+        row.update({"s1_pre_scenes": n_pre, "s1_event_scenes": n_ev, "otsu_db": None})
+        if ev.year not in cfg.years.years:
+            row.update(usable=False, status="no forest map for this year")
+        elif n_pre == 0 or n_ev == 0:
+            row.update(usable=False, status="no Sentinel-1 coverage")
+        else:
+            mask, thr = s1_flood.flood_mask(
+                ee, ctx.aoi, pre, event, refdata.DATASETS["jrc"], refdata.DATASETS["dem"]
+            )
+            frac = mask.toFloat().reduceResolution(ee.Reducer.mean(), maxPixels=64)
+            items.append(
+                (
+                    f"flood_{ev.event_id}",
+                    frac,
+                    ctx.grid,
+                    ctx.raw.flood_fraction(ev.event_id),
+                    np.nan,
+                    "COPERNICUS/S1_GRD",
+                )
+            )
+            row.update(otsu_db=round(thr, 3), status="mapped")
+        rows.append(row)
+        ctx.log(f"{ev.event_id}: S1 pre {n_pre}, event {n_ev} -> {row['status']}")
+    if items:
+        if _assets_available(ctx):
+            tasks = [
+                submit_asset_export(
+                    ee, _filled(img, ctx.aoi, -9999.0), asset_id(cfg, name), grid, name
+                )
+                for name, img, grid, *_ in items
+            ]
+            wait_for_tasks(ee, tasks)
+            for name, _, grid, path, nodata, tags in items:
+                download_asset(
+                    asset_id(cfg, name),
+                    grid,
+                    path,
+                    fetch=_nan_fetch(getpixels_fetch(ee)),
+                    nodata=nodata,
+                    tags={"DAIFF_SOURCE": tags},
+                )
+        else:
+            _direct_download(ctx, items)
+    jrc = read_raster(ctx.raw.jrc_occurrence, ctx.grid)
+    for row in rows:
+        if row["status"] != "mapped":
+            continue
+        f = read_raster(ctx.raw.flood_fraction(row["event_id"]), ctx.grid)
+        f[jrc > 90] = np.nan
+        share = float(np.nanmean(f >= cfg.flood.flooded_fraction_threshold))
+        row["flooded_share"] = round(share, 5)
+        row["usable"] = 0.0005 <= share <= 0.5  # implausible extents are not training labels
+        if not row["usable"]:
+            row["status"] = f"implausible flooded share {share:.4f}"
+    out = pd.DataFrame(rows)
+    out["split"] = np.where(out["year"] <= cfg.flood.train_until, "train", "test")
+    out.to_csv(ctx.raw.flood_events_csv, index=False, lineterminator="\n")
+    ctx.log(
+        f"flood events: {int(out['usable'].sum())} usable of {len(out)} "
+        f"-> {ctx.raw.flood_events_csv}"
+    )
+
+
 def step_forest(ctx: Ctx) -> None:
     """Random-forest forest / non-forest at 10 m for every year (D-14)."""
     from daiff.gee import forest_rf
@@ -349,5 +438,6 @@ STEPS = {
     "dw": step_dw,
     "chirps": step_chirps,
     "cpc": step_cpc,
+    "floods": step_floods,
     "forest": step_forest,
 }
