@@ -417,6 +417,25 @@ def run_pipeline(
     return p.store.run_id
 
 
+def plan_for_run(cfg: DaiffConfig, run_id: str) -> RunPlan:
+    """A RunPlan bound to an existing (e.g. published) run, for validation and the API."""
+    raw = RawLayout(cfg.data_root)
+    store = RunStore(cfg.data_root, run_id)
+    meta = json.loads(store.run_metadata.read_text(encoding="utf-8"))
+    grid = Grid.from_config(cfg) if cfg.grid.bounds is not None else raw.read_grid()
+    return RunPlan(
+        cfg,
+        raw,
+        grid,
+        store,
+        tuple(meta["years"]),
+        meta["config_hash"],
+        meta["code_commit"],
+        meta["data_versions"],
+        meta.get("model_id"),
+    )
+
+
 def published_years(cfg: DaiffConfig, run_id: str) -> list[int]:
     meta = json.loads(RunStore(cfg.data_root, run_id).run_metadata.read_text(encoding="utf-8"))
     return list(meta.get("years", []))

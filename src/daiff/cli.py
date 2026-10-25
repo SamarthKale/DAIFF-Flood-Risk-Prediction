@@ -100,6 +100,53 @@ def watch(
     typer.echo(f"processed new forest years: {new}" if new else "no new forest maps")
 
 
+@app.command("sample-points")
+def sample_points_cmd(
+    config: Path = ConfigOpt,
+    reference_dir: Path | None = typer.Option(None, help="Default: <repo>/reference"),
+) -> None:
+    """SRS 7.3: draw the stratified reference sample (≥600 points, ≥150 loss)."""
+    from daiff.validation.run import DEFAULT_REFERENCE_DIR, sample_points
+
+    out = sample_points(_load(config), reference_dir or DEFAULT_REFERENCE_DIR)
+    typer.echo(f"wrote {out}")
+
+
+@app.command()
+def validate(
+    config: Path = ConfigOpt,
+    what: str = typer.Option(..., help="forest or flood"),
+    n_boot: int = typer.Option(1000, help="Bootstrap samples for the ablation CI"),
+    reference_dir: Path | None = typer.Option(None, help="Default: <repo>/reference"),
+    log: bool = typer.Option(True, "--log/--no-log", help="Append results to docs/test_log.md"),
+) -> None:
+    """Compute SRS chapter 7 metrics for the published run (FR-F1/F2, FR-R2/R3)."""
+    from daiff.validation import run as v
+
+    cfg = _load(config)
+    if what == "forest":
+        try:
+            m = v.validate_forest(cfg, reference_dir or v.DEFAULT_REFERENCE_DIR)
+        except v.MissingLabels as exc:
+            typer.echo(str(exc))
+            raise typer.Exit(2) from exc
+        typer.echo(
+            f"FR-F1 OA {m['fr_f1']['overall_accuracy']:.3f}, forest F1 "
+            f"{m['fr_f1']['forest_f1']:.3f}; FR-F2 loss F1 {m['fr_f2']['loss_f1']:.3f}"
+        )
+    elif what == "flood":
+        m = v.validate_flood(cfg, n_boot=n_boot)
+        typer.echo(
+            f"FR-R2 AUC {m['auc']:.3f} (HAND baseline {m['hand_baseline_auc_binary']:.3f}); "
+            f"FR-R3 ablation dAUC {m['ablation']['delta']:.3f}"
+        )
+    else:
+        typer.echo("--what must be 'forest' or 'flood'")
+        raise typer.Exit(2)
+    if log:
+        v.log_results(cfg, what, m)
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

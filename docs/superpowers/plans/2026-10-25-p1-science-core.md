@@ -214,8 +214,8 @@ on behalf of the flood model.
 - `cohens_kappa(a, b) -> float`.
 - `write_test_log_entry(path: Path, *, requirement, method, run_ref, result, evidence, by) -> None` (appends a Markdown table row).
 - `daiff validate -c CFG --what forest|flood` → `metrics/forest.json` / `metrics/flood.json` in the current run + a test-log row (flood uses Task 7 `evaluate`, `spatial_block_cv`, `ablation`, `permutation_importance_table`). `daiff sample-points -c CFG` writes `reference/forest_sample_points_<project>.csv`.
-- [ ] Tests: allocation respects 600/150; kappa of identical = 1, of known 2×2 example = documented value (e.g. a=[1,1,0,0,1,0], b=[1,0,0,0,1,1] → 0.333…); Olofsson example from the paper's Table (pinned numbers: use their 3-class example, area estimate within 1e-3); test-log row appended with correct columns.
-- [ ] Commit `feat(validation): forest accuracy (Olofsson), kappa, flood report, validate CLI`; push.
+- [x] Tests: allocation respects 600/150; kappa of identical = 1, of known 2×2 example = documented value (e.g. a=[1,1,0,0,1,0], b=[1,0,0,0,1,1] → 0.333…); Olofsson example from the paper's Table (pinned numbers: use their 3-class example, area estimate within 1e-3); test-log row appended with correct columns.
+- [x] Commit `feat(validation): forest accuracy (Olofsson), kappa, flood report, validate CLI`; push.
 
 ### Task 12: Bench (NFR-1/2) and P1 close-out
 

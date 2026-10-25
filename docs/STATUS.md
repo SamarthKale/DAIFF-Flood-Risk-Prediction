@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P1 Science core — executing (native, in session)
-- **Last done:** P1 Task 10 (run/watch/train, end-to-end, NFR-3 in CI).
-- **Next task:** P1 Task 11 (validation module, daiff validate).
+- **Last done:** P1 Task 11 (validation: sampling, Olofsson accuracy, kappa, daiff validate).
+- **Next task:** P1 Task 12 (bench NFR-1/2, close P1).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
