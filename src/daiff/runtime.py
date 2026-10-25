@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from distributed import Client, LocalCluster
 
 from daiff.config import RuntimeConfig
@@ -23,5 +25,6 @@ def make_client(rt: RuntimeConfig) -> Client:
         threads_per_worker=rt.threads_per_worker,
         processes=True,
         dashboard_address=None,
+        silence_logs=logging.ERROR,
     )
     return Client(cluster)

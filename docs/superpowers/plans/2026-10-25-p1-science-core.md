@@ -221,5 +221,5 @@ on behalf of the flood model.
 
 **Files:** Create `src/daiff/bench.py`; Modify `src/daiff/cli.py`, `docs/verification_matrix.md`, `docs/STATUS.md`.
 - `daiff bench -c CFG --workers 1,2` runs `predict` tiled with each worker count and appends rows to `docs/perf/<date>-<machine>.md`; reports speed-up.
-- [ ] Test: bench on synthetic writes a perf file with 2 rows.
-- [ ] Update verification matrix (FR-C1/C3/C4, FR-F3/F4, FR-R1/R3 machinery, FR-A1, NFR-3/4 → "passing (synthetic)"); STATUS → P1 done, next = P2 Task 1. Commit `docs: close P1`; push.
+- [x] Test: bench on synthetic writes a perf file with 2 rows.
+- [x] Update verification matrix (FR-C1/C3/C4, FR-F3/F4, FR-R1/R3 machinery, FR-A1, NFR-3/4 → "passing (synthetic)"); STATUS → P1 done, next = P2 Task 1. Commit `docs: close P1`; push.

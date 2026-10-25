@@ -147,6 +147,29 @@ def validate(
         v.log_results(cfg, what, m)
 
 
+@app.command()
+def bench(
+    config: Path = ConfigOpt,
+    workers: str = typer.Option("1,2", help="Comma-separated worker counts"),
+    out: Path | None = typer.Option(None, help="Default: docs/perf/<date>-<machine>.md"),
+) -> None:
+    """NFR-2: time tiled prediction with different worker counts."""
+    import platform
+    from datetime import date
+
+    from daiff.bench import bench as run_bench
+    from daiff.pipeline.stages import REPO_ROOT
+
+    counts = [int(w) for w in workers.split(",")]
+    target = out or REPO_ROOT / "docs" / "perf" / f"{date.today()}-{platform.node()}.md"
+    times = run_bench(_load(config), counts, target)
+    for n, t in zip(counts, times, strict=True):
+        typer.echo(f"{n} worker(s): {t:.3f} s")
+    typer.echo(
+        f"speed-up {counts[0]}→{counts[-1]} workers: {1 - times[-1] / times[0]:.0%} less time"
+    )
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

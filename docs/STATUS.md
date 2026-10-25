@@ -4,19 +4,19 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P1 Science core — executing (native, in session)
-- **Last done:** P1 Task 11 (validation: sampling, Olofsson accuracy, kappa, daiff validate).
-- **Next task:** P1 Task 12 (bench NFR-1/2, close P1).
+- **Phase:** P2 API + dashboard — executing (native, in session)
+- **Last done:** P1 complete (12 tasks).
+- **Next task:** P2 Task 1 (API app factory and /api/meta).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
-- **CI:** not set up yet.
+- **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
 
 ## Phases
 
 | Phase | Scope | Plan | Status |
 |---|---|---|---|
 | P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | **done** |
-| P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | [plan](superpowers/plans/2026-10-25-p1-science-core.md) | not started |
+| P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | [plan](superpowers/plans/2026-10-25-p1-science-core.md) | **done** |
 | P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | [plan](superpowers/plans/2026-10-25-p2-api-dashboard.md) | not started |
 | P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | [plan](superpowers/plans/2026-10-25-p3-kopili-ingestion.md) | not started |
 | P4 Tier 1 acceptance | real runs, validation, U-Net challenger, NFR checks, test log | [plan](superpowers/plans/2026-10-25-p4-p7-acceptance-tier2-tier3-closeout.md) | not started (refine at start) |
@@ -54,5 +54,6 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-25 | Samarth + Claude | P1 science core executed (12 tasks, 125 tests); synthetic AUC 0.999 vs HAND 0.709 |
 | 2026-10-25 | Samarth + Claude | P0 bootstrap executed (10 tasks, 57 tests) |
 | 2026-10-25 | Samarth + Claude | Read SRS and problem statement; brainstormed; approved design; wrote spec, CLAUDE.md and docs |

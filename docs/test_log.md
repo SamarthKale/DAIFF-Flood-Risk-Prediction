@@ -10,3 +10,6 @@ Rules:
 | Date | Requirement | Method | Config / run_id / commit | Result | Evidence | By |
 |---|---|---|---|---|---|---|
 | 2026-10-25 | FR-D5 | T | synthetic.yaml / – / e940162 | PASS — dev check, not acceptance | `daiff check-grid`: "FR-D5 PASS: 15 layers aligned" | Claude (Samarth's session) |
+| 2026-10-25 | FR-R2 | A | synthetic / 145aa28c8070 / 3ac12ffcc4d2 | PASS: AUC 0.999 (HAND 0.709); flooded in 4-5 0.98, area 0.11 — dev check, not acceptance | metrics/flood.json | daiff validate |
+| 2026-10-25 | FR-R3 | A | synthetic / 145aa28c8070 / 3ac12ffcc4d2 | PASS: ablation dAUC 0.002 [0.002, 0.003] — dev check, not acceptance | metrics/flood.json | daiff validate |
+| 2026-10-25 | NFR-2 | T | synthetic / 145aa28c8070 / 3ac12ff | PASS: 1->2 workers 42% less time (laptop) — dev check, not acceptance | docs/perf/ | daiff bench |
