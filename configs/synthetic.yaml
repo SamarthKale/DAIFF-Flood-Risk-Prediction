@@ -2,7 +2,7 @@ project: {name: synthetic, basin: synthetic}
 grid:
   crs: EPSG:32646
   res: 30
-  bounds: [300000, 2900000, 306000, 2906000]   # 200 x 200 cells
+  bounds: [300000, 2899980, 306000, 2905980]   # 200 x 200 cells
   buffer_m: 0
 years:
   t0: 2019

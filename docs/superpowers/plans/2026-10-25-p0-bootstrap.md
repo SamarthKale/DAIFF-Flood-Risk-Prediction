@@ -230,7 +230,7 @@ project: {name: synthetic, basin: synthetic}
 grid:
   crs: EPSG:32646
   res: 30
-  bounds: [300000, 2900000, 306000, 2906000]   # 200 x 200 cells
+  bounds: [300000, 2899980, 306000, 2905980]   # 200 x 200 cells
   buffer_m: 0
 years:
   t0: 2019
@@ -357,7 +357,7 @@ Expected: all pass.
   - `check_alignment(paths: Sequence[Path], grid: Grid, atol: float = 1e-6) -> AlignmentReport`
   - Fixture `small_grid = Grid.from_bounds("EPSG:32646", (300000, 2900000, 300120, 2900090), res=30)` (4 × 3 cells)
 
-- [ ] **Step 1: Write the failing tests** — `tests/test_grid.py`
+- [x] **Step 1: Write the failing tests** — `tests/test_grid.py`
 
 ```python
 import numpy as np
@@ -443,7 +443,7 @@ def test_fr_d5_detects_shape_mismatch(tmp_path, small_grid):
 
 
 def test_fr_d5_detects_half_cell_shift(tmp_path, small_grid):
-    shifted = small_grid.transform * Affine.translation(0.5, 0)  # 15 m east
+    shifted = small_grid.transform @ Affine.translation(0.5, 0)  # 15 m east
     report = check_alignment(
         [_write(tmp_path / "a.tif", small_grid, transform=shifted)], small_grid
     )
@@ -461,21 +461,21 @@ def test_fr_d5_reports_missing_file(tmp_path, small_grid):
     assert [p.field for p in report.problems] == ["missing"]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_grid.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff.grid'`.
 
-- [ ] **Step 3: Implement `src/daiff/grid.py`** with the interfaces above. Compare CRS with
+- [x] **Step 3: Implement `src/daiff/grid.py`** with the interfaces above. Compare CRS with
 `rasterio.crs.CRS.from_user_input(grid.crs) == src.crs` and transforms with
 `transform.almost_equals(expected, precision=atol)`. Check one problem per field, in the order missing → crs → shape → transform.
 
-- [ ] **Step 4: Run the tests and lint**
+- [x] **Step 4: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass.
 
-- [ ] **Step 5: Close the task** — tick, update STATUS, `git commit -m "feat(grid): snapped UTM grid and FR-D5 alignment check"`, push.
+- [x] **Step 5: Close the task** — tick, update STATUS, `git commit -m "feat(grid): snapped UTM grid and FR-D5 alignment check"`, push.
 
 ---
 
@@ -1130,7 +1130,7 @@ def test_fr_d5_check_grid_fails_on_shifted_layer(tmp_path):
 
     cfg = load_config(SYN_CONFIG, env=_env(tmp_path))
     g = Grid.from_config(cfg)
-    shifted = Grid(g.crs, g.transform * Affine.translation(0.5, 0), g.width, g.height)
+    shifted = Grid(g.crs, g.transform @ Affine.translation(0.5, 0), g.width, g.height)
     write_cog(
         RawLayout(cfg.data_root).dem, np.zeros(g.shape, "float32"), shifted, nodata=np.nan, tags={}
     )
