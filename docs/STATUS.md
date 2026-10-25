@@ -4,9 +4,9 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P0 Bootstrap — executing (native, in session)
-- **Last done:** P0 Task 9 (CI workflow).
-- **Next task:** P0 Task 10 (docs + close P0).
+- **Phase:** P1 Science core — executing (native, in session)
+- **Last done:** P0 complete (Tasks 1-10).
+- **Next task:** P1 Task 1 (deps, config sections, Dask runtime).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
@@ -15,7 +15,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Phase | Scope | Plan | Status |
 |---|---|---|---|
-| P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | plan written |
+| P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | **done** |
 | P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | [plan](superpowers/plans/2026-10-25-p1-science-core.md) | not started |
 | P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | [plan](superpowers/plans/2026-10-25-p2-api-dashboard.md) | not started |
 | P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | [plan](superpowers/plans/2026-10-25-p3-kopili-ingestion.md) | not started |
@@ -51,4 +51,5 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-25 | Samarth + Claude | P0 bootstrap executed (10 tasks, 57 tests) |
 | 2026-10-25 | Samarth + Claude | Read SRS and problem statement; brainstormed; approved design; wrote spec, CLAUDE.md and docs |

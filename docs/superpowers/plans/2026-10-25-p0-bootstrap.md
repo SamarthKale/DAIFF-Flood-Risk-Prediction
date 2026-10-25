@@ -1229,7 +1229,7 @@ Then run `gh run list --limit 1` once and write the outcome into STATUS under **
 **Interfaces:**
 - Produces: documents that later phases update in place (verification matrix rows, test-log entries, perf logs).
 
-- [ ] **Step 1: Write `docs/setup/gee.md`** — numbered steps a teammate follows alone:
+- [x] **Step 1: Write `docs/setup/gee.md`** — numbered steps a teammate follows alone:
 1. Sign in with a personal Google account at https://code.earthengine.google.com/register.
 2. Choose **Use with a Cloud project → Unpaid usage → Academia & research**.
 3. Create a new Cloud project (suggested ID `daiff-<yourname>`). No billing account is needed for
@@ -1249,7 +1249,7 @@ Also cover:
 - **Troubleshooting:** `ee.Initialize` errors, "project not registered", and a wrong Google account
   in the browser.
 
-- [ ] **Step 2: Write `docs/verification_matrix.md`** — one row per requirement in
+- [x] **Step 2: Write `docs/verification_matrix.md`** — one row per requirement in
 `docs/srs/requirements.md` (26 FR + 10 NFR), columns `Requirement | Tier | Method | Artifact | Phase | Status`.
 Artifacts and phases come from spec §8 and §11. Status after P0:
 - FR-D5 **partial**: `tests/test_grid.py`, `daiff check-grid`; Kopili layers pending P3.
@@ -1259,30 +1259,30 @@ Artifacts and phases come from spec §8 and §11. Status after P0:
 - NFR-10 **partial**: gitleaks in CI.
 - Everything else: **not started**.
 
-- [ ] **Step 3: Write `docs/test_log.md`**
+- [x] **Step 3: Write `docs/test_log.md`**
 - Explain the rule: acceptance entries use Kopili data, frozen test sets and a recorded run_id + commit (SRS 8.3).
 - Table columns: `Date | Requirement | Method | Config / run_id / commit | Result | Evidence | By`.
 - One first row: a dev check of FR-D5 on the synthetic basin (PASS), marked "dev check — not acceptance".
 
-- [ ] **Step 4: Write `docs/LICENSES.md` and `docs/perf/README.md`**
+- [x] **Step 4: Write `docs/LICENSES.md` and `docs/perf/README.md`**
 - **`LICENSES.md`**: the data-source table from spec §7, plus a library table (numpy BSD-3, pandas
   BSD-3, rasterio BSD-3 with bundled GDAL MIT, pydantic MIT, PyYAML MIT, typer MIT, python-dotenv
   BSD-3, pytest MIT, pytest-cov MIT, ruff MIT), and "Project code licence: pending team decision
   (proposal MIT)".
 - **`perf/README.md`**: the NFR-1/NFR-2 log format — `machine | cores | RAM | workers | stage | seconds | run_id | commit`.
 
-- [ ] **Step 5: Update `docs/STATUS.md` for P0 completion**
+- [x] **Step 5: Update `docs/STATUS.md` for P0 completion**
 - Phase table: P0 **done** (with a link to this plan); "Now" set to P1.
 - Next task: "Write the P1 science-core plan (`docs/superpowers/plans/<date>-p1-science-core.md`) from spec §6.7–6.12 and §11, then execute it".
 - Add a session-log row.
 - Add a README line pointing to `docs/setup/gee.md`.
 
-- [ ] **Step 6: Final verification**
+- [x] **Step 6: Final verification**
 
 Run: `uv run pytest -m "not gee and not slow and not colab" -v && uv run ruff check . && uv run ruff format --check .`
 Expected: everything passes.
 
-- [ ] **Step 7: Commit and push**
+- [x] **Step 7: Commit and push**
 
 ```bash
 git add docs README.md
