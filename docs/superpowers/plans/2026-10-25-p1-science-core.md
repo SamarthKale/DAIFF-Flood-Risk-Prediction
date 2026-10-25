@@ -174,8 +174,8 @@ on behalf of the flood model.
 - `baseline_coupling(f_t0, cn_t0, q_t0) -> dict` (f=f_t0, dF=0, U=0, CN=cn_t0, Q=q_t0); `delta_s(S_t, S_t0) -> np.ndarray`.
 - Stage `predict` per year: `susceptibility_<y>.tif`, `riskclass_<y>.tif`, `delta_s_<y>.tif`.
 
-- [ ] Tests: `test_fr_c3_same_forest_map_gives_zero_delta_s` (|ΔS| ≤ 1e-6 everywhere — Review 4); `test_fr_c4_removing_upstream_forest_never_lowers_s` (synthetic: set forest10m→0 in 100 cells (30 m) upstream of the outlet, recompute coupling+predict: no cell's S decreases (tol 1e-7), outlet S increases); `test_risk_classes_breaks` (`[0.1,0.2,0.39,0.4,0.79,0.8,nan] → [1,2,2,3,4,5,255]`); `test_predict_matches_model_predict_proba` on 100 random cells.
-- [ ] Commit `feat(flood): grid prediction, risk classes and delta-S`; push.
+- [x] Tests: `test_fr_c3_same_forest_map_gives_zero_delta_s` (|ΔS| ≤ 1e-6 everywhere — Review 4); `test_fr_c4_removing_upstream_forest_never_lowers_s` (synthetic: set forest10m→0 in 100 cells (30 m) upstream of the outlet, recompute coupling+predict: no cell's S decreases (tol 1e-7), outlet S increases); `test_risk_classes_breaks` (`[0.1,0.2,0.39,0.4,0.79,0.8,nan] → [1,2,2,3,4,5,255]`); `test_predict_matches_model_predict_proba` on 100 random cells.
+- [x] Commit `feat(flood): grid prediction, risk classes and delta-S`; push.
 
 ### Task 9: Sub-basin table and FR-A1 flags
 

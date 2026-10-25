@@ -12,3 +12,12 @@ def flood_ctx(tmp_path_factory) -> FloodContext:
     cfg = load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(root)})
     raw = make_basin(cfg)
     return build_dataset_from_raw(cfg, raw)
+
+
+@pytest.fixture(scope="session")
+def trained(flood_ctx):
+    from daiff.flood.dataset import FEATURES
+    from daiff.flood.model import train_model
+
+    train = flood_ctx.dataset[flood_ctx.dataset["split"] == "train"]
+    return train_model(train, FEATURES, flood_ctx.cfg)

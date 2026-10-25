@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P1 Science core — executing (native, in session)
-- **Last done:** P1 Task 7 (flood dataset, model, baseline, ablation).
-- **Next task:** P1 Task 8 (prediction, risk classes, delta-S).
+- **Last done:** P1 Task 8 (prediction, risk classes, delta-S; FR-C3/C4).
+- **Next task:** P1 Task 9 (sub-basin table, FR-A1 flags).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
@@ -48,6 +48,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 - P0 T4: small_grid fixture bounds -> (300000, 2900010, 300120, 2900100) so it really is 4x3 (same 30 m multiple issue) — cost if wrong: none.
 - P1 T3/T4/T5/T7/T8/T9: per-module pipeline Stage objects are all built in T10 (pipeline/stages.py) instead of one stage per task; the functions they call are done and tested in their own task. Cost if wrong: none (same stages, one file).
 - P1 T7: synthetic.yaml sets flood.block_size_m=2000 (6 km basin has <3 blocks at 10 km); Kopili keeps 10 km. Interface name FloodContext (plan said SyntheticContext in a draft). Cost if wrong: none.
+- P1 T8: FR-C4 outlet = last land cell on the D8 path downstream of the cleared block (the basin outlet is permanent water, S=NaN by design). Cost if wrong: guide may ask for the basin outlet; then use the lowest land cell.
 
 ## Session log
 
