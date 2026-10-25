@@ -1181,7 +1181,7 @@ at 30 m; 6 forest10m at 10 m), and data lands in `data/synthetic/raw/` (gitignor
 - Produces: a workflow named `ci` running on pushes to `main` and on pull requests, with jobs
   `python` and `secrets`. P1 adds the synthetic end-to-end and coverage gate; P2 adds a `web` job.
 
-- [ ] **Step 1: Write the workflow**
+- [x] **Step 1: Write the workflow**
 
 ```yaml
 name: ci
@@ -1210,12 +1210,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-- [ ] **Step 2: Validate the YAML locally**
+- [x] **Step 2: Validate the YAML locally**
 
 Run: `uv run python -c "import yaml; d = yaml.safe_load(open('.github/workflows/ci.yml')); print(sorted(d['jobs']))"`
 Expected: `['python', 'secrets']`
 
-- [ ] **Step 3: Close the task** — tick, STATUS, `git commit -m "ci: lint, tests with coverage, gitleaks"`, push.
+- [x] **Step 3: Close the task** — tick, STATUS, `git commit -m "ci: lint, tests with coverage, gitleaks"`, push.
 Then run `gh run list --limit 1` once and write the outcome into STATUS under **CI** (don't wait, don't fix now — D-07).
 
 ---

@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P0 Bootstrap — executing (native, in session)
-- **Last done:** P0 Task 8 (CLI synth/check-grid/check-metadata).
-- **Next task:** P0 Task 9 (CI workflow).
+- **Last done:** P0 Task 9 (CI workflow).
+- **Next task:** P0 Task 10 (docs + close P0).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
