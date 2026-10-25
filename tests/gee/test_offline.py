@@ -107,6 +107,15 @@ def test_otsu_threshold_splits_bimodal_histogram():
     assert -4 < otsu_threshold(counts, edges) < -1
 
 
+def test_hsg_from_texture_rules():
+    from daiff.gee.refdata import hsg_from_texture
+
+    sand = np.array([95, 70, 30, 20, 40, 60])
+    clay = np.array([5, 15, 30, 50, 10, 25])
+    # A sandy; B loamy; C clay loam; D clay; B silt loam; C sandy clay loam
+    assert hsg_from_texture(sand, clay).tolist() == [1, 2, 3, 4, 2, 3]
+
+
 def test_hsg_remap_treats_dual_groups_as_d():
     assert HSG_REMAP == {1: 1, 2: 2, 3: 3, 4: 4, 11: 4, 12: 4, 13: 4, 14: 4}
     assert remap_hsg(np.array([1, 12, 4, 0])).tolist() == [1, 4, 4, 255]

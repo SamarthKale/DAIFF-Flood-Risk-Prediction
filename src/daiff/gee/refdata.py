@@ -14,8 +14,23 @@ DATASETS = {
     "dynamic_world": "GOOGLE/DYNAMICWORLD/V1",
     "worldcover": "ESA/WorldCover/v200",
     "chirps": "UCSB-CHG/CHIRPS/DAILY",
-    "hysogs": "projects/sat-io/open-datasets/HYSOGs250m",  # verify on first live run (P3)
+    "soilgrids_sand": "projects/soilgrids-isric/sand_mean",
+    "soilgrids_clay": "projects/soilgrids-isric/clay_mean",
 }
+TOPSOIL = (("0-5cm", 5), ("5-15cm", 10), ("15-30cm", 15))  # depth-weighted 0-30 cm
+
+
+def hsg_from_texture(sand_pct, clay_pct) -> np.ndarray:
+    """Hydrologic soil group from topsoil texture (TR-55 texture classes; D-28).
+
+    D: clay > 40 %; C: clay 20-40 %; A: sand >= 90 % and clay < 10 %; otherwise B.
+    """
+    sand, clay = np.asarray(sand_pct, float), np.asarray(clay_pct, float)
+    out = np.full(sand.shape, 2, dtype=np.uint8)
+    out[(sand >= 90) & (clay < 10)] = 1
+    out[clay >= 20] = 3
+    out[clay > 40] = 4
+    return out
 
 
 def remap_hsg(codes: np.ndarray) -> np.ndarray:
@@ -29,9 +44,27 @@ def dem_image(ee):
     return ee.Image(DATASETS["dem"]).select("elevation").resample("bilinear").toFloat()
 
 
+def _topsoil(ee, asset: str, var: str):
+    img = ee.Image(asset)
+    total = sum(w for _, w in TOPSOIL)
+    acc = None
+    for depth, w in TOPSOIL:
+        band = img.select(f"{var}_{depth}_mean").multiply(w / total)
+        acc = band if acc is None else acc.add(band)
+    return acc.divide(10)  # g/kg -> %
+
+
 def hsg_image(ee):
-    img = ee.Image(DATASETS["hysogs"])
-    return img.remap(list(HSG_REMAP), list(HSG_REMAP.values()), 255).toByte()
+    """SoilGrids topsoil texture -> HSG 1-4 (same rule as `hsg_from_texture`)."""
+    sand = _topsoil(ee, DATASETS["soilgrids_sand"], "sand")
+    clay = _topsoil(ee, DATASETS["soilgrids_clay"], "clay")
+    hsg = (
+        ee.Image(2)
+        .where(sand.gte(90).And(clay.lt(10)), 1)
+        .where(clay.gte(20), 3)
+        .where(clay.gt(40), 4)
+    )
+    return hsg.updateMask(sand.mask()).toByte()
 
 
 def jrc_image(ee):
@@ -40,7 +73,8 @@ def jrc_image(ee):
 
 def hansen_images(ee):
     gfc = ee.Image(DATASETS["hansen"])
-    return gfc.select("treecover2000").toByte(), gfc.select("lossyear").toByte()
+    # lossyear: 0 = no loss, 1..24 = 2001..2024 (unmask so "no loss" is 0, not nodata)
+    return gfc.select("treecover2000").toByte(), gfc.select("lossyear").unmask(0).toByte()
 
 
 def dw_mode_image(ee, year: int):

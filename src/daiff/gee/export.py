@@ -66,6 +66,41 @@ def getpixels_fetch(ee, bands: Sequence[str] | None = None) -> Fetch:
     return fetch
 
 
+def compute_fetch(ee, image) -> Fetch:
+    """A Fetch that computes `image` directly for each window (no asset; ee.data.computePixels)."""
+
+    def fetch(_asset: str, window: Window, grid: Grid) -> np.ndarray:
+        t = grid.transform
+        request = {
+            "expression": image,
+            "fileFormat": "NUMPY_NDARRAY",
+            "grid": {
+                "dimensions": {"width": int(window.width), "height": int(window.height)},
+                "affineTransform": {
+                    "scaleX": t.a,
+                    "shearX": 0,
+                    "translateX": t.c + window.col_off * t.a,
+                    "shearY": 0,
+                    "scaleY": t.e,
+                    "translateY": t.f + window.row_off * t.e,
+                },
+                "crsCode": grid.crs,
+            },
+        }
+        for attempt in range(4):
+            try:
+                arr = ee.data.computePixels(request)
+                break
+            except Exception:
+                if attempt == 3:
+                    raise
+                time.sleep(5 * (attempt + 1))
+        names = arr.dtype.names or ()
+        return np.stack([arr[n] for n in names]) if names else arr[np.newaxis]
+
+    return fetch
+
+
 def download_asset(
     asset: str,
     grid: Grid,

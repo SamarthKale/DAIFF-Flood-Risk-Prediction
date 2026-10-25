@@ -20,6 +20,7 @@ from daiff.gee.export import (
     asset_exists,
     asset_id,
     asset_root,
+    compute_fetch,
     download_asset,
     getpixels_fetch,
     submit_asset_export,
@@ -60,9 +61,54 @@ def ensure_folders(ee, root: str) -> None:
             ee.data.createAsset({"type": "FOLDER"}, path)
 
 
+def _assets_available(ctx: Ctx) -> bool:
+    try:
+        ensure_folders(ctx.ee, asset_root(ctx.cfg))
+        return True
+    except Exception as exc:
+        ctx.log(f"asset storage unavailable ({exc}); computing tiles directly")
+        return False
+
+
+FLOAT_FILL = -9999.0
+
+
+def _filled(image, aoi, nodata):
+    """Clip to the AOI, then fill everything masked with nodata (a sentinel for float NaN)."""
+    return image.clip(aoi).unmask(FLOAT_FILL if nodata != nodata else nodata, sameFootprint=False)
+
+
+def _nan_fetch(fetch):
+    def wrapped(asset, window, grid):
+        block = fetch(asset, window, grid).astype("float32")
+        block[(block <= FLOAT_FILL + 1) | ~np.isfinite(block)] = np.nan
+        return block
+
+    return wrapped
+
+
+def _direct_download(ctx: Ctx, items: list[tuple], tile: int = 1024) -> None:
+    for name, image, grid, path, nodata, tags in items:
+        fetch = compute_fetch(ctx.ee, _filled(image, ctx.aoi, nodata))
+        if nodata != nodata:  # NaN
+            fetch = _nan_fetch(fetch)
+        download_asset(
+            f"direct:{name}:v2",
+            grid,
+            path,
+            fetch=fetch,
+            tile=tile,
+            nodata=nodata,
+            tags={"DAIFF_SOURCE": tags},
+        )
+        ctx.log(f"downloaded {path}")
+
+
 def _export_and_download(ctx: Ctx, items: list[tuple]) -> None:
     """items: (name, image, grid, local_path, nodata, tags)."""
-    ensure_folders(ctx.ee, asset_root(ctx.cfg))
+    if not _assets_available(ctx):
+        _direct_download(ctx, items)
+        return
     tasks = []
     for name, image, grid, _, nodata, _ in items:
         img = image.unmask(nodata) if nodata == nodata else image  # NaN stays masked
@@ -89,7 +135,14 @@ def step_static(ctx: Ctx) -> None:
         ctx,
         [
             ("dem", refdata.dem_image(ee), ctx.grid, r.dem, np.nan, refdata.DATASETS["dem"]),
-            ("hsg", refdata.hsg_image(ee), ctx.grid, r.hsg, 255, refdata.DATASETS["hysogs"]),
+            (
+                "hsg",
+                refdata.hsg_image(ee),
+                ctx.grid,
+                r.hsg,
+                255,
+                refdata.DATASETS["soilgrids_clay"],
+            ),
             (
                 "jrc",
                 refdata.jrc_image(ee),
@@ -148,33 +201,31 @@ def step_inventory(ctx: Ctx) -> None:
 
 
 def step_chirps(ctx: Ctx, start_year: int = 2000) -> None:
-    """Daily CHIRPS mean per sub-basin, one reduceRegions call per year."""
+    """Daily CHIRPS mean per sub-basin: one year of days stacked as bands, one reduceRegions."""
     ee = ctx.ee
-    subs = ee.FeatureCollection(json.loads(ctx.raw.subbasins.read_text("utf-8")))
+    subs = ee.FeatureCollection(json.loads(ctx.raw.subbasins.read_text("utf-8"))).select(
+        ["subbasin_id"]
+    )
     frames = []
     last = max(ctx.cfg.years.years)
     for y in range(start_year, last + 1):
         col = ee.ImageCollection(refdata.DATASETS["chirps"]).filterDate(
             f"{y}-01-01", f"{y + 1}-01-01"
         )
-
-        def per_day(img):
-            fc = img.reduceRegions(subs, ee.Reducer.mean(), scale=5566)
-            date = img.date().format("YYYY-MM-dd")
-            return fc.map(
-                lambda feat: ee.Feature(
-                    None,
-                    {
-                        "date": date,
-                        "subbasin_id": feat.get("subbasin_id"),
-                        "precip_mm": feat.get("mean"),
-                    },
+        stack = col.select("precipitation").toBands()  # bands "YYYYMMDD_precipitation"
+        # 1 km sampling so even the smallest (1.5 km2) sub-basins get a value
+        rows = stack.reduceRegions(subs, ee.Reducer.mean(), scale=1000).getInfo()["features"]
+        long = []
+        for row in rows:
+            props = row["properties"]
+            sid = props.pop("subbasin_id")
+            for band, v in props.items():
+                d = band.split("_")[0]
+                long.append(
+                    {"date": f"{d[:4]}-{d[4:6]}-{d[6:8]}", "subbasin_id": sid, "precip_mm": v}
                 )
-            )
-
-        rows = col.map(per_day).flatten().getInfo()["features"]
-        frames.append(pd.DataFrame([row["properties"] for row in rows]))
-        ctx.log(f"CHIRPS {y}: {len(rows)} sub-basin-days")
+        frames.append(pd.DataFrame(long))
+        ctx.log(f"CHIRPS {y}: {len(long)} sub-basin-days")
     df = pd.concat(frames, ignore_index=True).sort_values(["subbasin_id", "date"])
     df["precip_mm"] = df["precip_mm"].astype(float).round(2)
     ctx.raw.chirps_daily_csv.parent.mkdir(parents=True, exist_ok=True)
