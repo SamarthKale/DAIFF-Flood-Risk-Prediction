@@ -242,6 +242,48 @@ def gee_ingest(
         STEPS[name](ctx)
 
 
+@app.command("check-streams")
+def check_streams(config: Path = ConfigOpt) -> None:
+    """FR-D4: share of derived major streams within 60 m of mapped (OSM) rivers (target ≥ 90%)."""
+    import json
+
+    from daiff.ingest.rivers import rasterize_lines, stream_agreement
+    from daiff.store.raw_layout import RawLayout
+    from daiff.terrain.derive import build_static_features, streams
+    from daiff.terrain.flow import accumulate
+
+    cfg = _load(config)
+    raw = RawLayout(cfg.data_root)
+    osm_path = raw.root / "osm_rivers.geojson"
+    if not osm_path.exists():
+        typer.echo("no OSM rivers yet — run `daiff gee ingest --steps rivers`")
+        raise typer.Exit(2)
+    grid = _grid(cfg)
+    terrain = build_static_features(raw, grid, cfg.terrain.stream_threshold_km2)
+    acc = accumulate(terrain.dirs, terrain.bands["elevation"] * 0 + 1, terrain.order)
+    major = streams(acc, grid.cell_area_m2, cfg.terrain.major_stream_km2)
+    osm = rasterize_lines(json.loads(osm_path.read_text("utf-8")), grid)
+    share = stream_agreement(major, osm, grid.res, 60.0)
+    (raw.root / "fr_d4.json").write_text(
+        json.dumps(
+            {
+                "share_within_60m": share,
+                "major_stream_km2": cfg.terrain.major_stream_km2,
+                "derived_cells": int(major.sum()),
+                "osm_cells": int(osm.sum()),
+            },
+            indent=2,
+        ),
+        "utf-8",
+    )
+    verdict = "PASS" if share >= 0.9 else "FAIL"
+    typer.echo(
+        f"FR-D4 {verdict}: {share:.1%} of derived major-stream cells within 60 m of OSM rivers"
+    )
+    if verdict == "FAIL":
+        raise typer.Exit(1)
+
+
 @app.command("check-grid")
 def check_grid(config: Path = ConfigOpt) -> None:
     """FR-D5: check every raw layer is on the common grid."""

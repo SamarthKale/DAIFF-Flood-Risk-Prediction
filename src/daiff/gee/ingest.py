@@ -359,6 +359,19 @@ def step_floods(ctx: Ctx) -> None:
     )
 
 
+def step_rivers(ctx: Ctx) -> None:
+    """OSM river/canal network for the FR-D4 check (Overpass API, not Earth Engine)."""
+    from daiff.gee.aoi import lonlat_bounds
+    from daiff.ingest.rivers import fetch_osm_rivers
+
+    p = ctx.cfg.project
+    w, s, e, n = lonlat_bounds(ctx.ee, p.aoi_hybas_id, p.aoi_hybas_level)
+    fc = fetch_osm_rivers((s, w, n, e))
+    out = ctx.raw.root / "osm_rivers.geojson"
+    out.write_text(json.dumps(fc), "utf-8")
+    ctx.log(f"OSM rivers: {len(fc['features'])} ways -> {out}")
+
+
 def step_forest(ctx: Ctx) -> None:
     """Random-forest forest / non-forest at 10 m for every year (D-14)."""
     from daiff.gee import forest_rf
@@ -439,5 +452,6 @@ STEPS = {
     "chirps": step_chirps,
     "cpc": step_cpc,
     "floods": step_floods,
+    "rivers": step_rivers,
     "forest": step_forest,
 }

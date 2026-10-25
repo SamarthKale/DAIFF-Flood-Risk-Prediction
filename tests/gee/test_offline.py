@@ -170,5 +170,30 @@ def test_overpass_query_and_stream_agreement():
     assert stream_agreement(derived, osm2, res=30.0, tol_m=60.0) == 0.0
 
 
+def test_rasterize_lines_marks_cells_along_river(small_grid):
+    from rasterio.warp import transform
+
+    from daiff.ingest.rivers import rasterize_lines
+
+    xmin, ymin, xmax, ymax = small_grid.bounds
+    ymid = (ymin + ymax) / 2
+    lons, lats = transform(small_grid.crs, "EPSG:4326", [xmin + 1, xmax - 1], [ymid, ymid])
+    fc = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": list(zip(lons, lats, strict=True)),
+                },
+            }
+        ],
+    }
+    mask = rasterize_lines(fc, small_grid)
+    assert mask[1].all() and not mask[0].any()
+
+
 def test_synthetic_config_unaffected(tmp_path):
     assert load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(tmp_path)}).gee.project is None
