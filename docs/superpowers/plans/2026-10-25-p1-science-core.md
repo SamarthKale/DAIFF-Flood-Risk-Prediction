@@ -68,14 +68,14 @@ on behalf of the flood model.
 - `topological_order(dirs) -> np.ndarray[int64]` — upstream-first (Kahn on receiver graph).
 - `accumulate(dirs, weights: np.ndarray, order=None) -> np.ndarray[float64]` — sum of `weights` over each cell and all its upstream cells (NaN weights count as 0).
 
-- [ ] Tests:
+- [x] Tests:
   - `test_d8_codes_on_plane_tilted_east`: dem = `-x` 5×5 → interior & non-east-edge cells all `1`; east edge `0`.
   - `test_d8_prefers_steepest_including_diagonal`: 3×3 with centre 10, SE corner 0, others 9.5 → centre code `2`.
   - `test_fill_raises_pit_to_spill_level`: 5×5 bowl with centre pit 1, rim 5, one rim gap at 3 → filled centre ≥ 3 and every interior cell > its receiver.
   - `test_every_cell_reaches_outlet_after_fill` (Review 1): random 50×50 dem with pits and a flat plateau → following `downstream_index` from any cell terminates at an outlet within h·w steps.
   - `test_accumulate_counts_upstream_cells`: east-tilted 3×4 plane, weights 1 → row values `[1, 2, 3, 4]`.
-- [ ] Implement (heap of `(elev, idx)` with numba typed list + heapq).
-- [ ] Tests + ruff; commit `feat(terrain): priority-flood fill, D8 and flow accumulation`; push.
+- [x] Implement (heap of `(elev, idx)` with numba typed list + heapq).
+- [x] Tests + ruff; commit `feat(terrain): priority-flood fill, D8 and flow accumulation`; push.
 
 ### Task 3: Terrain — slope, TWI, streams, HAND, distance; static stage
 

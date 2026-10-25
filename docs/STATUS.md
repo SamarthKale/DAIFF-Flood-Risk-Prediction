@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P1 Science core — executing (native, in session)
-- **Last done:** P1 Task 1 (deps, config sections, Dask runtime).
-- **Next task:** P1 Task 2 (terrain: fill, D8, accumulation).
+- **Last done:** P1 Task 2 (fill, D8, accumulation).
+- **Next task:** P1 Task 3 (slope, TWI, streams, HAND, static stage).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
