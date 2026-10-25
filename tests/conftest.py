@@ -10,7 +10,7 @@ SYN_CONFIG = REPO / "configs" / "synthetic.yaml"
 def small_grid():
     from daiff.grid import Grid
 
-    return Grid.from_bounds("EPSG:32646", (300000, 2900000, 300120, 2900090), res=30)
+    return Grid.from_bounds("EPSG:32646", (300000, 2900010, 300120, 2900100), res=30)
 
 
 @pytest.fixture

@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P0 Bootstrap — executing (native, in session)
-- **Last done:** P0 Task 3 (grid + FR-D5).
-- **Next task:** P0 Task 4 (COG writer/reader).
+- **Last done:** P0 Task 4 (COG writer/reader).
+- **Next task:** P0 Task 5 (provenance, run store, NFR-4 check).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
@@ -45,6 +45,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Execution rulings
 
 - P0 T3: synthetic grid bounds changed to [300000, 2899980, 306000, 2905980] so the northing is a multiple of 30 m (keeps 200x200) — cost if wrong: none.
+- P0 T4: small_grid fixture bounds -> (300000, 2900010, 300120, 2900100) so it really is 4x3 (same 30 m multiple issue) — cost if wrong: none.
 
 ## Session log
 

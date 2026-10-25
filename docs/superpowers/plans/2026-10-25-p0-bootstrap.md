@@ -355,7 +355,7 @@ Expected: all pass.
   - `@dataclass(frozen=True) class LayerProblem: path: Path; field: Literal["missing", "crs", "transform", "shape"]; expected: str; actual: str`
   - `@dataclass class AlignmentReport: checked: list[Path]; problems: list[LayerProblem]` with property `ok -> bool`
   - `check_alignment(paths: Sequence[Path], grid: Grid, atol: float = 1e-6) -> AlignmentReport`
-  - Fixture `small_grid = Grid.from_bounds("EPSG:32646", (300000, 2900000, 300120, 2900090), res=30)` (4 × 3 cells)
+  - Fixture `small_grid = Grid.from_bounds("EPSG:32646", (300000, 2900010, 300120, 2900100), res=30)` (4 × 3 cells)
 
 - [x] **Step 1: Write the failing tests** — `tests/test_grid.py`
 
@@ -495,7 +495,7 @@ Expected: all pass.
     Raises `GridMismatchError` (subclass of `ValueError`) when `check_alignment` fails.
   - `read_tags(path: Path) -> dict[str, str]`; `read_band_names(path: Path) -> list[str]`
 
-- [ ] **Step 1: Write the failing tests** — `tests/store/test_cog.py`
+- [x] **Step 1: Write the failing tests** — `tests/store/test_cog.py`
 
 ```python
 import hashlib
@@ -540,7 +540,7 @@ def test_multiband_band_names(tmp_path, small_grid):
 
 
 def test_output_is_cog_with_overviews(tmp_path):
-    g = Grid.from_bounds("EPSG:32646", (300000, 2900000, 330720, 2930720), res=30)  # 1024 x 1024
+    g = Grid.from_bounds("EPSG:32646", (300000, 2900010, 330720, 2930730), res=30)  # 1024 x 1024
     p = write_cog(tmp_path / "big.tif", np.ones(g.shape, "float32"), g, nodata=np.nan, tags={})
     with rasterio.open(p) as src:
         assert src.tags(ns="IMAGE_STRUCTURE")["LAYOUT"] == "COG"
@@ -560,7 +560,7 @@ def test_read_raster_rejects_misaligned(tmp_path, small_grid):
     p = write_cog(
         tmp_path / "a.tif", np.zeros((3, 4), "float32"), small_grid, nodata=np.nan, tags={}
     )
-    other = Grid.from_bounds("EPSG:32646", (300030, 2900000, 300150, 2900090), res=30)
+    other = Grid.from_bounds("EPSG:32646", (300030, 2900010, 300150, 2900100), res=30)
     with pytest.raises(GridMismatchError):
         read_raster(p, other)
 
@@ -583,12 +583,12 @@ def test_rejects_array_of_wrong_shape(tmp_path, small_grid):
         )
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/store/test_cog.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'daiff.store'`.
 
-- [ ] **Step 3: Implement `src/daiff/store/cog.py`**
+- [x] **Step 3: Implement `src/daiff/store/cog.py`**
 
 Write the array into a `rasterio.io.MemoryFile` GTiff (tags via `update_tags`, band names via
 `set_band_description`), then `rasterio.shutil.copy(mem, path, driver="COG", COMPRESS="DEFLATE",
@@ -596,13 +596,13 @@ PREDICTOR="YES", BLOCKSIZE="512", OVERVIEWS="AUTO", RESAMPLING=<"NEAREST" for in
 "AVERAGE" for floats>, NUM_THREADS="1")`. `store/__init__.py` re-exports the public names of the
 store modules (extend it in later tasks).
 
-- [ ] **Step 4: Run the tests and lint**
+- [x] **Step 4: Run the tests and lint**
 
 Run: `uv run pytest tests -v && uv run ruff check . && uv run ruff format --check .`
 Expected: all pass. If the band-name test fails because COG CreateCopy drops descriptions, store the
 names as a tag `DAIFF_BAND_NAMES` (JSON list) and read them from there in `read_band_names`.
 
-- [ ] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(store): deterministic COG writer and grid-checked reader"`, push.
+- [x] **Step 5: Close the task** — tick, STATUS, `git commit -m "feat(store): deterministic COG writer and grid-checked reader"`, push.
 
 ---
 
