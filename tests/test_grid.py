@@ -58,11 +58,19 @@ def test_dict_roundtrip():
     assert Grid.from_dict({**g.to_dict(), "nested_factor": 3}) == g
 
 
-def test_from_config_uses_bounds_and_requires_them(synthetic_cfg):
+def test_from_config_uses_bounds_and_requires_them(synthetic_cfg, tmp_path):
     assert Grid.from_config(synthetic_cfg).shape == (200, 200)
-    kopili = load_config(REPO / "configs" / "kopili.yaml", env={})
+    cfg_path = tmp_path / "configs" / "nobounds.yaml"
+    cfg_path.parent.mkdir()
+    cfg_path.write_text(
+        "project: {name: nb, basin: x}\nyears: {t0: 2019, years: [2019]}\n", encoding="utf-8"
+    )
     with pytest.raises(ValueError, match="grid.bounds"):
-        Grid.from_config(kopili)
+        Grid.from_config(load_config(cfg_path, env={}))
+    assert Grid.from_config(load_config(REPO / "configs" / "kopili.yaml", env={})).shape == (
+        5671,
+        7155,
+    )
 
 
 def test_fr_d5_aligned_layers_pass(tmp_path, small_grid):
