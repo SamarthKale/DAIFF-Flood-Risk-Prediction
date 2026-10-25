@@ -11,3 +11,4 @@ gee: {project: null, asset_root: null}
 runtime: {seed: 42}
 paths: {data_root: ../data}
 synthetic: {size: 200, subbasin_split: 2}
+flood: {block_size_m: 2000}   # 6 km basin: 2 km CV blocks (Kopili keeps the SRS 10 km)

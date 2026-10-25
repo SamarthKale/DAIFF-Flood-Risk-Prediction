@@ -160,8 +160,8 @@ on behalf of the flood model.
 - `permutation_importance_table(model, df_test, features) -> pd.DataFrame` (sklearn, seeded).
 - Stage `train` (on demand, `daiff train` / first `run`): writes `data_root/models/<model_id>/{model.json, features.json, metrics.json, config.yaml}`; `RunStore.model_id_file`.
 
-- [ ] Tests: `test_sample_event_balances_and_respects_cap`; `test_sample_event_with_no_positives_returns_empty` (Review 5); `test_fr_r1_train_from_config_saves_model_features_metrics` (synthetic dataset → files exist, features.json == FEATURES); `test_model_beats_hand_baseline_on_synthetic` (AUC > baseline); `test_fr_r3_ablation_reports_ci` (keys present, lo ≤ delta ≤ hi); `test_training_is_deterministic` (two trainings → identical model.json bytes).
-- [ ] Commit `feat(flood): dataset, monotone XGBoost, baseline, block CV and ablation`; push.
+- [x] Tests: `test_sample_event_balances_and_respects_cap`; `test_sample_event_with_no_positives_returns_empty` (Review 5); `test_fr_r1_train_from_config_saves_model_features_metrics` (synthetic dataset → files exist, features.json == FEATURES); `test_model_beats_hand_baseline_on_synthetic` (AUC > baseline); `test_fr_r3_ablation_reports_ci` (keys present, lo ≤ delta ≤ hi); `test_training_is_deterministic` (two trainings → identical model.json bytes).
+- [x] Commit `feat(flood): dataset, monotone XGBoost, baseline, block CV and ablation`; push.
 
 ### Task 8: Prediction, risk classes, ΔS (FR-R2, FR-C3, FR-C4)
 
