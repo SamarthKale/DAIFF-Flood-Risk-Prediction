@@ -11,7 +11,7 @@ import json
 import os
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from dotenv import dotenv_values
@@ -66,6 +66,42 @@ class GeeConfig(_Model):
 
 class RuntimeConfig(_Model):
     seed: int = 42
+    cluster: Literal["local", "slurm"] = "local"
+    n_workers: int = Field(default=2, ge=1)
+    threads_per_worker: int = Field(default=2, ge=1)
+    tile_size: int = Field(default=1024, ge=16)
+
+
+class ForestConfig(_Model):
+    mmu_ha: float = Field(default=0.5, gt=0)
+
+
+class TerrainConfig(_Model):
+    stream_threshold_km2: float = Field(default=1.0, gt=0)
+    major_stream_km2: float = Field(default=50.0, gt=0)
+
+
+class CouplingConfig(_Model):
+    return_period_years: int = Field(default=10, ge=2)
+    dual_hsg: Literal["D"] = "D"
+
+
+class FloodConfig(_Model):
+    sample_cap_per_class: int = Field(default=50000, ge=10)
+    train_until: int = 2021
+    block_size_m: float = Field(default=10000.0, gt=0)
+    class_breaks: list[float] = [0.2, 0.4, 0.6, 0.8]
+    n_estimators: int = Field(default=400, ge=1)
+    max_depth: int = Field(default=6, ge=1)
+    learning_rate: float = Field(default=0.05, gt=0)
+    flooded_fraction_threshold: float = Field(default=0.5, gt=0, le=1)
+
+    @field_validator("class_breaks")
+    @classmethod
+    def _four_increasing(cls, v):
+        if len(v) != 4 or any(b <= a for a, b in zip(v, v[1:], strict=False)):
+            raise ValueError("class_breaks must be 4 strictly increasing values")
+        return v
 
 
 class PathsConfig(_Model):
@@ -83,6 +119,10 @@ class DaiffConfig(_Model):
     years: YearsConfig
     gee: GeeConfig = GeeConfig()
     runtime: RuntimeConfig = RuntimeConfig()
+    forest: ForestConfig = ForestConfig()
+    terrain: TerrainConfig = TerrainConfig()
+    coupling: CouplingConfig = CouplingConfig()
+    flood: FloodConfig = FloodConfig()
     paths: PathsConfig = PathsConfig()
     synthetic: SyntheticConfig | None = None
 

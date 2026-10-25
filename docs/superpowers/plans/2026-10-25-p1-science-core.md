@@ -53,9 +53,9 @@ on behalf of the flood model.
   `RuntimeConfig(seed=42, cluster="local", n_workers=2, threads_per_worker=2, tile_size=1024)`.
 - `make_client(rt: RuntimeConfig) -> distributed.Client` — `LocalCluster` for `"local"`; `"slurm"` imports `dask_jobqueue.SLURMCluster` lazily (ImportError message: "install with `uv sync --extra hpc`").
 
-- [ ] Test `test_make_client_local_runs_task`: client with 1 worker computes `client.submit(sum, [1, 2]).result() == 3`; `test_slurm_without_extra_gives_install_hint` (monkeypatch import to fail → `ImportError` matching `"--extra hpc"`). Config test: synthetic config exposes `cfg.flood.class_breaks == [0.2, 0.4, 0.6, 0.8]`.
-- [ ] Implement; sbatch template runs `uv run daiff run -c $CONFIG` with `--cpus-per-task`, `--mem`, `--time` placeholders documented in `hpc/slurm/README.md`.
-- [ ] `uv sync --extra dev`, full test suite, ruff. Commit `feat(runtime): science deps, config sections, dask client`. Push.
+- [x] Test `test_make_client_local_runs_task`: client with 1 worker computes `client.submit(sum, [1, 2]).result() == 3`; `test_slurm_without_extra_gives_install_hint` (monkeypatch import to fail → `ImportError` matching `"--extra hpc"`). Config test: synthetic config exposes `cfg.flood.class_breaks == [0.2, 0.4, 0.6, 0.8]`.
+- [x] Implement; sbatch template runs `uv run daiff run -c $CONFIG` with `--cpus-per-task`, `--mem`, `--time` placeholders documented in `hpc/slurm/README.md`.
+- [x] `uv sync --extra dev`, full test suite, ruff. Commit `feat(runtime): science deps, config sections, dask client`. Push.
 
 ### Task 2: Terrain — fill, D8, topological order, accumulation
 
