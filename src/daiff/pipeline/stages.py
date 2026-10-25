@@ -208,10 +208,23 @@ def _train(p: RunPlan) -> None:
             p.grid,
             p.cfg,
         )
-        train, test = df[df["split"] == "train"], df[df["split"] == "test"]
-        model = train_model(train, FEATURES, p.cfg)
-        metrics = evaluate(model, test, FEATURES, p.cfg) if test["label"].nunique() == 2 else {}
-        metrics.update({"n_train": int(len(train)), "events": list(events["event_id"])})
+        if p.cfg.flood.strategy == "loeo":
+            # final model uses every usable event; skill is measured out-of-event
+            from daiff.flood.evaluate import evaluate_predictions, leave_one_event_out
+
+            oof, per_event = leave_one_event_out(df, FEATURES, p.cfg)
+            metrics = evaluate_predictions(df, oof, p.cfg)
+            metrics.update({"strategy": "loeo", "per_event_auc": per_event})
+            model = train_model(df, FEATURES, p.cfg)
+            n_train = len(df)
+        else:
+            train, test = df[df["split"] == "train"], df[df["split"] == "test"]
+            model = train_model(train, FEATURES, p.cfg)
+            two = test["label"].nunique() == 2
+            metrics = evaluate(model, test, FEATURES, p.cfg) if two else {}
+            metrics["strategy"] = "temporal"
+            n_train = len(train)
+        metrics.update({"n_train": int(n_train), "events": sorted(df["event_id"].unique())})
         p.model_id = save_model(model, FEATURES, metrics, p.cfg, p.models_dir)
     src = p.models_dir / p.model_id / "metrics.json"
     shutil.copyfile(src, p.store.metrics_dir / "flood_train.json")

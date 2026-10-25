@@ -38,6 +38,7 @@ rows at the bottom; never rewrite history. If a decision is superseded, add a ne
 | D-29 | 2026-10-25 | Forest RF training samples composites at 30,000 random points per year (not `stratifiedSample` over the basin), and S2 composites keep scenes < 40 % cloudy, at most 12 least-cloudy per MGRS tile per season | The first full-basin stratified sampling burned ~349 EECU-hours (over the 150 h Community quota) before it was cancelled; one-sub-basin test: 0.40 EECU-h per 403 km2 per year | 2.3, 2.7 |
 | D-30 | 2026-10-25 | Flow routing (D8, accumulation, streams, HAND, TWI) on the MERIT Hydro hydrologically adjusted elevation (`MERIT/Hydro/v1_0_1` elv, 90 m -> 30 m bilinear); elevation and slope features stay SRTM | Raw SRTM routes the flat floodplain badly (17-21 % of plains streams within 60 m of OSM vs 38-50 % with MERIT); HAND is the key flood predictor | FR-D4, 3.4 |
 | D-31 | 2026-10-25 | FR-D4 compares derived streams with catchment >= 200 km2 against OSM waterway=river/canal lines | OSM tags smaller channels as streams, which the river/canal query excludes | FR-D4 |
+| D-32 | 2026-10-26 | Kopili flood model uses leave-one-event-out (`flood.strategy: loeo`): skill is measured on each of the 6 events predicted by a model trained on the other 5; the published model trains on all 6. The SRS temporal split (train <= 2021, test from 2022) is still computed and reported (`strategy: temporal`) | Only 2 usable events (2019, 2020) fall in the SRS training period; user asked for a stronger model | 7.4, OI-5 |
 
 ## Open issues (SRS chapter 10)
 

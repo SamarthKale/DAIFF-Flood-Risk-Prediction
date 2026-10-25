@@ -99,6 +99,9 @@ class FloodConfig(_Model):
     max_depth: int = Field(default=6, ge=1)
     learning_rate: float = Field(default=0.05, gt=0)
     flooded_fraction_threshold: float = Field(default=0.5, gt=0, le=1)
+    # "temporal": SRS 7.4 split (train <= train_until, test after). "loeo": leave-one-event-out,
+    # for when too few events fall before the split (Kopili: D-32).
+    strategy: Literal["temporal", "loeo"] = "temporal"
 
     @field_validator("class_breaks")
     @classmethod

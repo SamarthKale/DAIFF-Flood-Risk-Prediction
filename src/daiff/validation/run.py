@@ -129,17 +129,42 @@ def validate_flood(cfg: DaiffConfig, n_boot: int = 1000) -> dict:
     train, test = df[df.split == "train"], df[df.split == "test"]
     cls = read_raster(p.store.riskclass(max(p.years)), p.grid)
     valid = cls != 255
-    metrics = evaluate(model, test, feats, cfg)
+    if cfg.flood.strategy == "loeo":
+        from daiff.flood.evaluate import ablation_loeo, evaluate_predictions, leave_one_event_out
+
+        oof, per_event = leave_one_event_out(df, feats, cfg)
+        metrics = evaluate_predictions(df, oof, cfg)
+        metrics.update(
+            {
+                "strategy": "loeo",
+                "per_event_auc": per_event,
+                "ablation": ablation_loeo(df, cfg, n_boot=n_boot),
+                "events_train": sorted(df.event_id.unique().tolist()),
+                "events_test": sorted(df.event_id.unique().tolist()),
+            }
+        )
+        imp_df = df
+    else:
+        metrics = evaluate(model, test, feats, cfg)
+        metrics.update(
+            {
+                "strategy": "temporal",
+                "ablation": ablation(train, test, cfg, n_boot=n_boot),
+                "events_train": sorted(train.event_id.unique().tolist()),
+                "events_test": sorted(test.event_id.unique().tolist()),
+            }
+        )
+        imp_df = test
     metrics.update(
         {
             "high_class_area_share": float(np.isin(cls[valid], [4, 5]).mean()),
-            "ablation": ablation(train, test, cfg, n_boot=n_boot),
             "block_cv": spatial_block_cv(df, cfg, k=5),
             "permutation_importance": permutation_importance_table(
-                model, test, list(FEATURES), cfg.runtime.seed
+                model,
+                imp_df.sample(min(len(imp_df), 200_000), random_state=cfg.runtime.seed),
+                list(FEATURES),
+                cfg.runtime.seed,
             ).to_dict(orient="records"),
-            "events_train": sorted(train.event_id.unique().tolist()),
-            "events_test": sorted(test.event_id.unique().tolist()),
         }
     )
     _write(p, "flood.json", metrics)

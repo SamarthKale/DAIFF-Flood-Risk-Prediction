@@ -48,6 +48,25 @@ def test_permutation_importance_and_block_cv(flood_ctx):
     assert cv["n_folds"] == 3 and 0.5 < cv["auc_mean"] <= 1.0
 
 
+def test_leave_one_event_out_predicts_every_row_from_other_events(flood_ctx):
+    from daiff.flood.evaluate import leave_one_event_out
+
+    df = flood_ctx.dataset
+    p, per_event = leave_one_event_out(df, FEATURES, flood_ctx.cfg)
+    assert p.shape == (len(df),) and ((p >= 0) & (p <= 1)).all()
+    assert set(per_event) == set(df["event_id"])
+    assert all(0.5 < v <= 1.0 for v in per_event.values())
+
+
+def test_loeo_ablation_reports_ci(flood_ctx):
+    from daiff.flood.evaluate import ablation_loeo
+
+    a = ablation_loeo(flood_ctx.dataset, flood_ctx.cfg, n_boot=100)
+    assert {"auc_full", "auc_no_coupling", "delta", "ci95", "per_event"} <= a.keys()
+    lo, hi = a["ci95"]
+    assert lo <= a["delta"] <= hi
+
+
 def test_training_is_deterministic(flood_ctx, tmp_path):
     train, _ = _split(flood_ctx.dataset)
     ids = [
