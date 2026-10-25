@@ -4,9 +4,9 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P3 Kopili ingestion — blocked on Earth Engine registration (see Waiting on humans)
-- **Last done:** P3 offline parts: flood-event candidates (reference/flood_events_kopili.csv), GEE auth/export/S2/RF/S1/reference builders, rainfall gaps + CPC mapping, OSM stream metric (tests pass; Earth Engine builders not yet run live).
-- **Next task:** P3 Task 3+ live: `daiff gee check`, then AOI/sub-basins, exports and downloads (needs DAIFF_GEE_PROJECT in .env + `earthengine authenticate`). Code in src/daiff/gee/ is written; wire `daiff gee ingest` after the first live AOI run.
+- **Phase:** P3 Kopili ingestion — live, forest classification running
+- **Last done:** P3 live ingestion: AOI (41 sub-basins), grid, static layers, MERIT routing, Dynamic World 2018-2026, CHIRPS + NOAA CPC (FR-D3 pass), S2 inventory (FR-D1), S1 floods (6 usable events, OI-5 closed), OSM rivers (FR-D4 fails 67.6 %, OI-11), terrain stage on Kopili (1.7 min).
+- **Next task:** finish `daiff gee ingest --steps forest` (9 years, 10 m RF; ~82 EECU-h est.), then `daiff check-grid` + first full `daiff run -c configs/kopili.yaml`, then close P3 and hand out docs/PARALLEL_WORK.md.
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
@@ -35,7 +35,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 - [x] **Samarth:** create the public GitHub repository — done:
       `SamarthKale/DAIFF-Flood-Risk-Prediction`.
-- [ ] **Every teammate:** register a free non-commercial Google Earth Engine project (steps:
+- [x] Samarth registered Earth Engine (project premium-state-512715-q9, Community tier; asset root enabled). **Quota note:** a cancelled sampling job used ~349 EECU-h of the 150 h/month quota on 2026-10-25.
+- [ ] **Every other teammate:** register a free non-commercial Google Earth Engine project (steps:
       `docs/setup/gee.md`), put the project ID in `.env`, and run
       `earthengine authenticate` yourself.
 - [ ] **Team:** choose a code licence (proposal: MIT) — needed for NFR-7.

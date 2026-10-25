@@ -6,11 +6,11 @@ One row per requirement in [`srs/requirements.md`](srs/requirements.md). Status 
 
 | Requirement | Tier | Method | Artifact | Phase | Status |
 |---|---|---|---|---|---|
-| FR-D1 | 1 | T | `raw/s2_inventory_<year>.csv` vs catalogue query (`daiff gee`) | P3 | not started |
+| FR-D1 | 1 | T | `raw/s2_inventory_<year>.csv` vs catalogue query (`daiff gee`) | P3 | evidence logged (all 8 MGRS tiles every season 2018-2026) |
 | FR-D2 | 1 | I, T | `raw/fr_d2_<year>.json` gap share + 20-window visual check | P3 | not started |
-| FR-D3 | 1 | T | `raw/rainfall/gaps.csv` (CPC + CHIRPS) | P3 | not started |
-| FR-D4 | 1 | A | `daiff check-streams` (≥ 90% within 60 m of OSM rivers) | P1/P3 | not started |
-| FR-D5 | 1 | T | `tests/test_grid.py::test_fr_d5_*`, `daiff check-grid` | P0/P3 | partial (synthetic passes; Kopili in P3) |
+| FR-D3 | 1 | T | `raw/rainfall/gaps.csv` (CPC + CHIRPS) | P3 | **accepted** (Kopili CPC + CHIRPS, 0 gaps > 3 days) |
+| FR-D4 | 1 | A | `daiff check-streams` (≥ 90% within 60 m of OSM rivers) | P1/P3 | **FAIL** 67.6 % vs 90 % (OI-11, needs guide decision) |
+| FR-D5 | 1 | T | `tests/test_grid.py::test_fr_d5_*`, `daiff check-grid` | P0/P3 | passing on Kopili raw layers (forest10m pending) |
 | FR-F1 | 1 | A | `daiff validate --what forest` (OA ≥ 90%, forest F1 ≥ 0.85) | P4 | not started |
 | FR-F2 | 1 | A | `daiff validate --what forest` (loss F1 ≥ 0.70) | P1/P4 | not started |
 | FR-F3 | 1 | T, A | `tests/forest/test_change.py::test_fr_f3_*` + Hansen comparison | P1/P4 | partial (sum rule passing; Hansen comparison in P4) |
