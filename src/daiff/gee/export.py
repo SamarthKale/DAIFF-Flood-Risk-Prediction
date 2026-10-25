@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import time
 from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -111,17 +112,21 @@ def download_asset(
     nodata: float | int,
     tags: dict[str, str] | None = None,
     band_names: Sequence[str] | None = None,
+    workers: int = 8,
 ) -> Path:
-    """Mosaic an asset onto `grid` tile by tile; skip if `path` already holds this asset."""
+    """Mosaic an asset onto `grid`, fetching tiles in parallel; skip if `path` already holds it."""
     path = Path(path)
     if path.exists() and read_tags(path).get("DAIFF_ASSET") == asset:
         return path
+    windows = tile_windows(grid, tile)
     out = None
-    for w in tile_windows(grid, tile):
-        block = fetch(asset, w, grid)
-        if out is None:
-            out = np.full((block.shape[0], *grid.shape), nodata, dtype=block.dtype)
-        out[:, w.row_off : w.row_off + w.height, w.col_off : w.col_off + w.width] = block
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        for w, block in zip(
+            windows, pool.map(lambda w: fetch(asset, w, grid), windows), strict=True
+        ):
+            if out is None:
+                out = np.full((block.shape[0], *grid.shape), nodata, dtype=block.dtype)
+            out[:, w.row_off : w.row_off + w.height, w.col_off : w.col_off + w.width] = block
     data = out[0] if out.shape[0] == 1 else out
     all_tags = {**(tags or {}), "DAIFF_ASSET": asset}
     return write_cog(path, data, grid, nodata=nodata, tags=all_tags, band_names=band_names)
