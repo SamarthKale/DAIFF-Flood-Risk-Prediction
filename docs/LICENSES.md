@@ -36,6 +36,13 @@ project guide. Update this file in the same commit that adds a dataset or depend
 | typer | MIT |
 | python-dotenv | BSD-3-Clause |
 | earthengine-api | Apache-2.0 |
+| numba | BSD-2-Clause |
+| scipy | BSD-3-Clause |
+| scikit-learn | BSD-3-Clause |
+| xgboost | Apache-2.0 |
+| pyarrow | Apache-2.0 |
+| dask, distributed | BSD-3-Clause |
+| dask-jobqueue (optional, HPC) | BSD-3-Clause |
 | pytest, pytest-cov | MIT |
 | ruff | MIT |
 | hatchling (build) | MIT |
