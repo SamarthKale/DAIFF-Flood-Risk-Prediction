@@ -31,6 +31,8 @@ rows at the bottom; never rewrite history. If a decision is superseded, add a ne
 | D-22 | 2026-10-25 | CN = f·CN_woods[HSG] + (1−f)·CN_nonforest[class, HSG] | Continuous, monotone in loss | 3.3, App. B |
 | D-23 | 2026-10-25 | Dual hydrologic soil groups (A/D, B/D, C/D) treated as D | Conservative (undrained) | 3.3 |
 | D-24 | 2026-10-25 | t₀ = 2019 if GEE S2 L2A covers < 90% of the AOI in the 2017/2018 dry seasons; otherwise 2018 | L2A sparse over India before ~Dec 2018 | 3.2, OI-2 |
+| D-25 | 2026-10-25 | Kopili catchment ≈ 20,068 km² (Wikipedia) is at the SRS's "approximately 5,000–20,000 km²" upper bound; keep the whole basin and record the HydroBASINS area in P3. If compute is tight, restrict to the catchment above Dharamtul and log it | Upstream forest loss (Karbi Anglong, Dima Hasao) and the flooded plains (Nagaon, Morigaon) must both be inside | 1.4, OI-1 |
+| D-26 | 2026-10-25 | Flood-event inventory starts as `reference/flood_events_kopili.csv` with 7 candidates (2017–2025), all `usable=False` until P3 confirms each Sentinel-1 flood extent; train ≤ 2021 currently has only 2020 (+2017/2019 if confirmed) — expect to revisit the temporal split (OI-5) | Sources found for 2020, 2022 (May, June), 2024, 2025; 2017/2019 statewide only | 7.4, OI-5 |
 
 ## Open issues (SRS chapter 10)
 
