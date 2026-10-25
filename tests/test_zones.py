@@ -16,6 +16,31 @@ def test_rasterize_subbasins_synthetic_quadrants(tmp_path):
     assert counts == {1000: 10000, 1001: 10000, 1002: 10000, 1003: 10000}
 
 
+def test_rasterize_keeps_large_hydrobasins_ids(tmp_path):
+    import json
+
+    from rasterio.warp import transform_geom
+
+    g = Grid.from_bounds("EPSG:32646", (300000, 2900010, 300120, 2900100), res=30)
+    xmin, ymin, xmax, ymax = g.bounds
+    ring = [[xmin, ymax], [xmax, ymax], [xmax, ymin], [xmin, ymin], [xmin, ymax]]
+    geom = transform_geom(g.crs, "EPSG:4326", {"type": "Polygon", "coordinates": [ring]})
+    fc = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"subbasin_id": 4080884570, "name": "K"},
+                "geometry": geom,
+            }
+        ],
+    }
+    p = tmp_path / "s.geojson"
+    p.write_text(json.dumps(fc))
+    zones, _ = rasterize_subbasins(p, g)
+    assert (zones == 4080884570).all()
+
+
 def test_zonal_mean_keeps_empty_zone_as_nan():
     zones = np.array([[1, 1, 2]], dtype="int32")
     vals = np.array([[1.0, 3.0, np.nan]])

@@ -24,7 +24,8 @@ def rasterize_subbasins(geojson_path: Path, grid: Grid) -> tuple[np.ndarray, pd.
         geom = transform_geom("EPSG:4326", grid.crs, feat["geometry"])
         shapes.append((geom, sid))
         rows.append({"subbasin_id": sid, "name": props.get("name", str(sid))})
-    zones = rasterize(shapes, out_shape=grid.shape, transform=grid.transform, fill=0, dtype="int32")
+    # int64: HydroBASINS ids (e.g. 4080884570) overflow int32
+    zones = rasterize(shapes, out_shape=grid.shape, transform=grid.transform, fill=0, dtype="int64")
     names = pd.DataFrame(rows).sort_values("subbasin_id").reset_index(drop=True)
     return zones, names
 
