@@ -1,0 +1,42 @@
+# Data, models, outputs (never committed — see CLAUDE.md)
+data/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Node / web
+web/node_modules/
+web/dist/
+web/coverage/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local-only documents (contain personal data or are large)
+docs/srs/*.pdf
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
