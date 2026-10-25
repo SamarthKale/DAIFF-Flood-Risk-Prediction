@@ -292,21 +292,25 @@ def test_config_hash_and_section_hash_track_science_settings(tmp_path):
 
 def test_unknown_key_is_rejected(tmp_path):
     with pytest.raises(ValidationError):
-        load_config(_variant(tmp_path, "runtime: {seed: 42}", "runtime: {seed: 42, sede: 1}"), env={})
+        load_config(
+            _variant(tmp_path, "runtime: {seed: 42}", "runtime: {seed: 42, sede: 1}"), env={}
+        )
 
 
 @pytest.mark.parametrize(
     "years_line",
     [
-        "years: [2020, 2019, 2021, 2022, 2023, 2024]",   # not increasing
-        "years: [2019, 2019, 2021, 2022, 2023, 2024]",   # duplicate
-        "years: [2020, 2021, 2022, 2023, 2024, 2025]",   # t0 2019 missing
-        "years: [2014, 2019, 2021, 2022, 2023, 2024]",   # before 2015
+        "years: [2020, 2019, 2021, 2022, 2023, 2024]",  # not increasing
+        "years: [2019, 2019, 2021, 2022, 2023, 2024]",  # duplicate
+        "years: [2020, 2021, 2022, 2023, 2024, 2025]",  # t0 2019 missing
+        "years: [2014, 2019, 2021, 2022, 2023, 2024]",  # before 2015
     ],
 )
 def test_invalid_years_are_rejected(tmp_path, years_line):
     with pytest.raises(ValidationError):
-        load_config(_variant(tmp_path, "years: [2019, 2020, 2021, 2022, 2023, 2024]", years_line), env={})
+        load_config(
+            _variant(tmp_path, "years: [2019, 2020, 2021, 2022, 2023, 2024]", years_line), env={}
+        )
 ```
 
 Add `tests/__init__.py` (empty) so `from tests.conftest import …` works.
@@ -370,8 +374,17 @@ B = (300010.0, 2900020.0, 300095.0, 2900100.0)
 
 def _write(path, grid, crs=None, transform=None, shape=None):
     h, w = shape or grid.shape
-    with rasterio.open(path, "w", driver="GTiff", width=w, height=h, count=1, dtype="float32",
-                       crs=crs or grid.crs, transform=transform or grid.transform) as dst:
+    with rasterio.open(
+        path,
+        "w",
+        driver="GTiff",
+        width=w,
+        height=h,
+        count=1,
+        dtype="float32",
+        crs=crs or grid.crs,
+        transform=transform or grid.transform,
+    ) as dst:
         dst.write(np.zeros((h, w), "float32"), 1)
     return path
 
@@ -431,7 +444,9 @@ def test_fr_d5_detects_shape_mismatch(tmp_path, small_grid):
 
 def test_fr_d5_detects_half_cell_shift(tmp_path, small_grid):
     shifted = small_grid.transform * Affine.translation(0.5, 0)  # 15 m east
-    report = check_alignment([_write(tmp_path / "a.tif", small_grid, transform=shifted)], small_grid)
+    report = check_alignment(
+        [_write(tmp_path / "a.tif", small_grid, transform=shifted)], small_grid
+    )
     assert [p.field for p in report.problems] == ["transform"]
 
 
@@ -512,8 +527,14 @@ def test_uint8_nodata_255_roundtrip(tmp_path, small_grid):
 
 def test_multiband_band_names(tmp_path, small_grid):
     arr = np.zeros((4, 3, 4), dtype="float32")
-    p = write_cog(tmp_path / "m.tif", arr, small_grid, nodata=np.nan, tags={},
-                  band_names=["f", "dF", "U", "Q"])
+    p = write_cog(
+        tmp_path / "m.tif",
+        arr,
+        small_grid,
+        nodata=np.nan,
+        tags={},
+        band_names=["f", "dF", "U", "Q"],
+    )
     assert read_raster(p, small_grid).shape == (4, 3, 4)
     assert read_band_names(p) == ["f", "dF", "U", "Q"]
 
@@ -536,21 +557,30 @@ def test_nfr_3_writing_twice_is_byte_identical(tmp_path, small_grid):
 
 
 def test_read_raster_rejects_misaligned(tmp_path, small_grid):
-    p = write_cog(tmp_path / "a.tif", np.zeros((3, 4), "float32"), small_grid, nodata=np.nan, tags={})
+    p = write_cog(
+        tmp_path / "a.tif", np.zeros((3, 4), "float32"), small_grid, nodata=np.nan, tags={}
+    )
     other = Grid.from_bounds("EPSG:32646", (300030, 2900000, 300150, 2900090), res=30)
     with pytest.raises(GridMismatchError):
         read_raster(p, other)
 
 
 def test_write_into_directory_with_spaces(tmp_path, small_grid):
-    p = write_cog(tmp_path / "dir with space" / "x.tif", np.zeros((3, 4), "float32"), small_grid,
-                  nodata=np.nan, tags={})
+    p = write_cog(
+        tmp_path / "dir with space" / "x.tif",
+        np.zeros((3, 4), "float32"),
+        small_grid,
+        nodata=np.nan,
+        tags={},
+    )
     assert read_raster(p, small_grid).shape == (3, 4)
 
 
 def test_rejects_array_of_wrong_shape(tmp_path, small_grid):
     with pytest.raises(ValueError):
-        write_cog(tmp_path / "a.tif", np.zeros((4, 4), "float32"), small_grid, nodata=np.nan, tags={})
+        write_cog(
+            tmp_path / "a.tif", np.zeros((4, 4), "float32"), small_grid, nodata=np.nan, tags={}
+        )
 ```
 
 - [ ] **Step 2: Run the tests to verify they fail**
@@ -613,8 +643,13 @@ import json
 import re
 import subprocess
 
-from daiff.store.provenance import (REQUIRED_TAGS, build_tags, code_commit, compute_run_id,
-                                    sha256_file)
+from daiff.store.provenance import (
+    REQUIRED_TAGS,
+    build_tags,
+    code_commit,
+    compute_run_id,
+    sha256_file,
+)
 
 
 def test_compute_run_id_is_deterministic_order_free_and_12_hex():
@@ -628,9 +663,17 @@ def test_build_tags_is_portable_and_timestamp_free(tmp_path):
     f = tmp_path / "raw" / "dem.tif"
     f.parent.mkdir()
     f.write_bytes(b"x")
-    tags = build_tags(run_id="r" * 12, config_hash="c" * 64, code_commit="abc", model_id="n/a",
-                      inputs=[f], data_root=tmp_path, data_versions={"synthetic": "seed=42"},
-                      year=None, t0=2019)
+    tags = build_tags(
+        run_id="r" * 12,
+        config_hash="c" * 64,
+        code_commit="abc",
+        model_id="n/a",
+        inputs=[f],
+        data_root=tmp_path,
+        data_versions={"synthetic": "seed=42"},
+        year=None,
+        t0=2019,
+    )
     assert set(REQUIRED_TAGS) <= tags.keys()
     assert json.loads(tags["DAIFF_INPUTS"]) == [{"path": "raw/dem.tif", "sha256": sha256_file(f)}]
     assert tags["DAIFF_YEAR"] == "n/a" and tags["DAIFF_T0"] == "2019"
@@ -711,7 +754,9 @@ def test_nfr_4_check_passes_on_complete_run(tmp_path, small_grid):
 
 
 def test_nfr_4_flags_missing_tag(tmp_path, small_grid):
-    problems = check_metadata(make_good_run(tmp_path, small_grid, drop_tag="DAIFF_CODE_COMMIT").run_dir)
+    problems = check_metadata(
+        make_good_run(tmp_path, small_grid, drop_tag="DAIFF_CODE_COMMIT").run_dir
+    )
     assert len(problems) == 1
     assert problems[0].path.name == "forest_2020.tif" and "DAIFF_CODE_COMMIT" in problems[0].problem
 
@@ -788,8 +833,16 @@ def copy_stage(name, src, dst, calls, deps=(), version="1", boom=None):
         if boom and boom["on"]:
             raise RuntimeError("boom")
         dst.write_text(src.read_text() + name)
-    return Stage(name=name, run=run, inputs=lambda _c: [src], outputs=lambda _c: [dst],
-                 config_sections=("runtime",), deps=deps, version=version)
+
+    return Stage(
+        name=name,
+        run=run,
+        inputs=lambda _c: [src],
+        outputs=lambda _c: [dst],
+        config_sections=("runtime",),
+        deps=deps,
+        version=version,
+    )
 
 
 @pytest.fixture
@@ -834,7 +887,7 @@ def test_reruns_on_changed_input_missing_output_or_new_version(ctx, tmp_path, ch
     Runner([a, b], state).run(ctx)
     assert calls[-1] == "b" and len(calls) == 5
     Runner([replace(a, version="2"), b], state).run(ctx)
-    assert calls[-1] == "a" and len(calls) == 6   # b's input bytes are unchanged, so b is skipped
+    assert calls[-1] == "a" and len(calls) == 6  # b's input bytes are unchanged, so b is skipped
 
 
 def test_force_and_only(ctx, tmp_path, chain):
@@ -926,6 +979,7 @@ from daiff.synthetic import make_basin
 def basin(tmp_path_factory):
     from daiff.config import load_config
     from tests.conftest import SYN_CONFIG
+
     root = tmp_path_factory.mktemp("syn")
     cfg = load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(root)})
     return cfg, make_basin(cfg)
@@ -934,7 +988,13 @@ def basin(tmp_path_factory):
 def test_writes_every_raw_layer(basin):
     cfg, raw = basin
     years = cfg.years.years
-    for p in [raw.grid_json, raw.chirps_daily_csv, raw.subbasins, *raw.layers_30m(years), *raw.layers_10m(years)]:
+    for p in [
+        raw.grid_json,
+        raw.chirps_daily_csv,
+        raw.subbasins,
+        *raw.layers_30m(years),
+        *raw.layers_10m(years),
+    ]:
         assert p.exists(), p
 
 
@@ -949,6 +1009,7 @@ def test_fr_d5_synthetic_layers_are_aligned(basin):
 def test_is_deterministic_for_a_seed(basin, tmp_path):
     from daiff.config import load_config
     from tests.conftest import SYN_CONFIG
+
     cfg, raw = basin
     raw2 = make_basin(load_config(SYN_CONFIG, env={"DAIFF_DATA_ROOT": str(tmp_path)}))
     for a, b in zip(raw.layers_30m(cfg.years.years), raw2.layers_30m(cfg.years.years), strict=True):
@@ -958,9 +1019,11 @@ def test_is_deterministic_for_a_seed(basin, tmp_path):
 def test_forest_declines_after_t0(basin):
     cfg, raw = basin
     fine = raw.read_grid().nested(3)
+
     def share(year):
         a = read_raster(raw.forest10m(year), fine)
         return a[a != 255].mean()
+
     assert share(cfg.years.years[-1]) <= share(cfg.years.t0) - 0.02
 
 
@@ -978,7 +1041,7 @@ def test_rainfall_is_gap_free_from_2000(basin):
     expected_days = (end - date(2000, 1, 1)).days + 1
     assert df["date"].min().date() == date(2000, 1, 1) and df["date"].max().date() == end
     assert (df.groupby("subbasin_id").size() == expected_days).all()
-    assert df["subbasin_id"].nunique() == cfg.synthetic.subbasin_split ** 2
+    assert df["subbasin_id"].nunique() == cfg.synthetic.subbasin_split**2
     assert (df["precip_mm"] >= 0).all() and np.isfinite(df["precip_mm"]).all()
 ```
 
@@ -1064,10 +1127,13 @@ def test_fr_d5_check_grid_fails_on_shifted_layer(tmp_path):
     from daiff.config import load_config
     from daiff.grid import Grid
     from daiff.store.raw_layout import RawLayout
+
     cfg = load_config(SYN_CONFIG, env=_env(tmp_path))
     g = Grid.from_config(cfg)
     shifted = Grid(g.crs, g.transform * Affine.translation(0.5, 0), g.width, g.height)
-    write_cog(RawLayout(cfg.data_root).dem, np.zeros(g.shape, "float32"), shifted, nodata=np.nan, tags={})
+    write_cog(
+        RawLayout(cfg.data_root).dem, np.zeros(g.shape, "float32"), shifted, nodata=np.nan, tags={}
+    )
     r = runner.invoke(app, ["check-grid", "-c", str(SYN_CONFIG)], env=_env(tmp_path))
     assert r.exit_code == 1 and "FR-D5 FAIL" in r.stdout and "dem.tif" in r.stdout
 

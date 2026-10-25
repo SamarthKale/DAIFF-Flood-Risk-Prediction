@@ -5,8 +5,8 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 ## Now
 
 - **Phase:** P0 Bootstrap — executing (native, in session)
-- **Last done:** All plans written (P0, P1, P2, P3, P4–P7) in `docs/superpowers/plans/`.
-- **Next task:** P0 Task 1 (package scaffold and `daiff --version`).
+- **Last done:** P0 Task 1 (package scaffold, `daiff --version`).
+- **Next task:** P0 Task 2 (typed configuration).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
