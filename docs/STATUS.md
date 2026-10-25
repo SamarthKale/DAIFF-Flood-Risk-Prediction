@@ -4,11 +4,11 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P0 Bootstrap — not started
-- **Last done:** Brainstorming finished; design approved. Written: system spec, CLAUDE.md,
-  requirement register, problem statement, decisions log, this file.
-- **Next task:** Get the written spec reviewed by Samarth, then write the P0 plan at
-  `docs/superpowers/plans/2026-10-25-p0-bootstrap.md` and execute it task by task.
+- **Phase:** P0 Bootstrap — plan written, execution not started
+- **Last done:** Spec + CLAUDE.md approved by Samarth; P0 plan written
+  (`docs/superpowers/plans/2026-10-25-p0-bootstrap.md`, 10 tasks).
+- **Next task:** P0 Task 1 (package scaffold and `daiff --version`), once Samarth has reviewed the
+  plan and picked an execution method.
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** not set up yet.
@@ -17,7 +17,7 @@ _Last updated: 2026-10-25 — Samarth's machine (Claude session)_
 
 | Phase | Scope | Plan | Status |
 |---|---|---|---|
-| P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | — | not started |
+| P0 Bootstrap | env, CI, config, grid, store, runner, synthetic skeleton, GEE setup guide | [plan](superpowers/plans/2026-10-25-p0-bootstrap.md) | plan written |
 | P1 Science core | terrain, forest, coupling, flood model, tables, flags, run/watch (synthetic) | — | not started |
 | P2 API + dashboard | FastAPI + React/MapLibre, exports, labelling page (synthetic) | — | not started |
 | P3 Kopili ingestion | GEE: AOI, S2 + RF, S1 floods, references, rainfall, rivers, event inventory | — | not started |
