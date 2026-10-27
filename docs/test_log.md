@@ -33,3 +33,6 @@ Rules:
 | 2026-10-26 | FR-R3 | A | kopili / 0d24afb6480d / 4f40320d7472 | PASS: ablation dAUC 0.019 [0.019, 0.020] | metrics/flood.json | daiff validate |
 | 2026-10-27 | NFR-2 | T | kopili / 0d24afb6480d / e3ba3e7 | PARTIAL: predict bench 82.0 s (1 worker), 65.0 s (2), 35.8 s (4): 1→2 = 21 % less (target 40 %), 2→4 = 45 % less, 1→4 = 56 % less. Laptop, shared-memory; to re-measure on HPC | docs/perf/2026-10-27-Samarth-Legion.md | daiff bench |
 | 2026-10-27 | FR-F1 | I | kopili | Sample drawn for labelling: 739 points (439 stable, 150 loss, 150 gain), meets >= 600 and >= 150 loss. Labels pending (humans) | reference/forest_sample_points_kopili.csv | daiff sample-points |
+| 2026-10-27 | NFR-1 | T | kopili / 0d24afb6480d / 4f40320 | PASS (laptop): full 9-year run 1,463 s (24 min); earlier runs 1,431-2,191 s; budget 6 h. Node type per OI-4 pending | docs/perf/2026-10-26-Samarth-Legion.md | daiff run --log-perf |
+| 2026-10-27 | NFR-5 | T | kopili / 0d24afb6480d / e3ba3e7 | PASS server-side: 5 tiles 0.23-0.38 s (< 3 s), sub-basin table 0.15 s (< 1 s). Browser 10 Mbps throttling not yet done | docs/perf/2026-10-27-nfr5.md | scripts/nfr5_timing.py |
+| 2026-10-27 | NFR-9 | T | a9f24d3 | PASS: coupling coverage 100 % (target 80 %), 182 tests pass | pytest --cov=daiff.coupling | pytest |

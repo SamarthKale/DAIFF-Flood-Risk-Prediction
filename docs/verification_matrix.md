@@ -32,13 +32,13 @@ One row per requirement in [`srs/requirements.md`](srs/requirements.md). Status 
 | FR-A1 | 1 | T | `tests/flood/test_tables.py::test_fr_a1_*` | P1 | passing (synthetic) |
 | FR-A2 | 2 | D | `daiff alerts replay` ≤ 1 h | P5 | not started |
 | FR-A3 | 3 | A | `docs/results/tier3_forecast.md` | P6 | not started |
-| NFR-1 | 1 | T | `docs/perf/` timed annual update ≤ 6 h | P4 | not started |
+| NFR-1 | 1 | T | `docs/perf/` timed annual update ≤ 6 h | P4 | PASS on laptop: full 9-year Kopili run 24-36 min (budget 6 h); node type pending OI-4 |
 | NFR-2 | 1 | T | `daiff bench` (2× workers → ≥ 40% faster) | P1/P4 | Kopili laptop (20 cores, 20 M rows): 1→2 workers 21% less (**below** 40%), 2→4 workers 45% less (pass); recheck on an HPC node (OI-4) |
 | NFR-3 | 1 | T | `tests/integration/test_end_to_end.py::test_nfr_3_*`, CI double run | P0/P1 | passing (synthetic) |
 | NFR-4 | 1 | I | `daiff check-metadata`, `tests/store/test_check.py` | P0 | passing (synthetic) |
-| NFR-5 | 1 | T | `scripts/nfr5_timing.py` (+ browser 10 Mbps throttling in P4) | P2/P4 | passing server-side (synthetic) |
-| NFR-6 | 1 | D | 5 non-team users (`docs/nfr6_protocol.md`) | P4 | not started |
+| NFR-5 | 1 | T | `scripts/nfr5_timing.py` (+ browser 10 Mbps throttling in P4) | P2/P4 | PASS server-side on Kopili (tiles 0.23-0.38 s, table 0.15 s); 10 Mbps browser throttling still to do |
+| NFR-6 | 1 | D | 5 non-team users (`docs/nfr6_protocol.md`) | P4 | protocol ready (`docs/nfr6_protocol.md`); 5 testers needed (human) |
 | NFR-7 | 1 | I | [`LICENSES.md`](LICENSES.md) reviewed by guide | P0/P4 | partial (list started) |
 | NFR-8 | 1 | I | `web/src/components/Banner.tsx` + vitest | P2 | passing (synthetic) |
-| NFR-9 | 1 | T | CI on every push; coupling coverage ≥ 80% | P0/P1 | passing (coupling coverage 100%) |
+| NFR-9 | 1 | T | CI on every push; coupling coverage ≥ 80% | P0/P1 | passing (coupling coverage 100%, 182 tests) |
 | NFR-10 | 1 | I | gitleaks job in CI | P0 | partial (scan in CI) |
