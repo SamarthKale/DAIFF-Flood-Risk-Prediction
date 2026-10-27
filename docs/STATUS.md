@@ -4,9 +4,9 @@ _Last updated: 2026-10-26 — Samarth's machine (Claude session)_
 
 ## Now
 
-- **Phase:** P3 Kopili ingestion — **done** (2026-10-26). Next: P4
+- **Phase:** P4 Tier 1 acceptance — in progress (P3 done 2026-10-26)
 - **Last done:** P3 closed. All Kopili raw layers, 9 forest maps, S2 previews, full `daiff run` (loeo flood model) published. Real results: FR-D3, FR-D5 pass; FR-D4 67.6 % (OI-11), FR-D2 2018 visual 14/20 (OI-13), FR-R2 AUC 0.762 vs HAND 0.516 (OI-12) — all raised for the guide.
-- **Next task:** P4 — refine the plan (`docs/superpowers/plans/2026-10-25-p4-p7-acceptance-tier2-tier3-closeout.md`): label the 600 reference points (humans), forest accuracy (FR-F1/F2), fix 2018 cloud mask (OI-13), more flood events / U-Net on Colab (OI-12). Send docs/PARALLEL_WORK.md packages A/B/C to friends.
+- **Next task:** P4.3 rest: `src/daiff/gee/chips.py` (256x256 chip export, quota-heavy: measure on one tile first), Colab notebooks `notebooks/colab/unet_train.ipynb` + `unet_infer.ipynb`, `daiff forest import-unet`. Done in P4: reference sample (739 points), NFR-2 bench (1->2 workers only 21 %, OI-4), `forest/unet.py` model (3 tests). Humans: label the 600+ points (Labelling page) so `daiff validate --what forest` can run (P4.4). Also: fix 2018 cloud mask (OI-13).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
@@ -62,6 +62,7 @@ _Last updated: 2026-10-26 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-27 | Samarth + Claude | P4 started: 739 reference points drawn, NFR-2 benchmark on Kopili, U-Net model + CPU torch extra |
 | 2026-10-26 | Samarth + Claude | P3 closed: real Kopili run, loeo flood AUC 0.762, FR-D2 2018 fails visual check, previews done |
 | 2026-10-25 | Samarth + Claude | P2 API + dashboard done (FastAPI + React/MapLibre; NFR-5 server-side 0.13-0.20 s) |
 | 2026-10-25 | Samarth + Claude | P1 science core executed (12 tasks, 125 tests); synthetic AUC 0.999 vs HAND 0.709 |
