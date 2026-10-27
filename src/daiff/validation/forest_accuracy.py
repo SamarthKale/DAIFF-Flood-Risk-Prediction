@@ -50,3 +50,29 @@ def cohens_kappa(a: Sequence, b: Sequence) -> float:
     po = float((a == b).mean())
     pe = float(sum((a == lab).mean() * (b == lab).mean() for lab in labels))
     return 1.0 if pe == 1 else (po - pe) / (1 - pe)
+
+
+def stratified_binary_report(
+    strata: Sequence[int],
+    map_forest: Sequence[bool],
+    ref_forest: Sequence[bool],
+    weights: Mapping[int, float],
+) -> dict:
+    """Overall accuracy and forest-class F1 of any forest map, estimated from a sample drawn in
+    `strata` (area weights W_h): each confusion cell is sum_h W_h * n_h,cell / n_h."""
+    s, m, r = np.asarray(strata), np.asarray(map_forest, bool), np.asarray(ref_forest, bool)
+    tp = fp = fn = tn = 0.0
+    for h, w in weights.items():
+        sel = s == h
+        n = int(sel.sum())
+        if n == 0:
+            continue
+        tp += w * float((m[sel] & r[sel]).sum()) / n
+        fp += w * float((m[sel] & ~r[sel]).sum()) / n
+        fn += w * float((~m[sel] & r[sel]).sum()) / n
+        tn += w * float((~m[sel] & ~r[sel]).sum()) / n
+    denom = 2 * tp + fp + fn
+    return {
+        "overall_accuracy": (tp + tn) / (tp + fp + fn + tn),
+        "forest_f1": 2 * tp / denom if denom > 0 else float("nan"),
+    }

@@ -15,7 +15,11 @@ from daiff.flood.model import load_model
 from daiff.pipeline.stages import REPO_ROOT, features_for, plan_for_run
 from daiff.store.cog import read_raster
 from daiff.store.run_store import current_run
-from daiff.validation.forest_accuracy import accuracy_report, cohens_kappa
+from daiff.validation.forest_accuracy import (
+    accuracy_report,
+    cohens_kappa,
+    stratified_binary_report,
+)
 from daiff.validation.report import write_test_log_entry
 from daiff.validation.sampling import strata_map, stratified_sample, stratum_weights
 
@@ -76,6 +80,24 @@ def _ref_class(t0: str, t: str) -> int:
     return 1 if t == "forest" else 2
 
 
+def compare_with_unet(
+    pts: pd.DataFrame, ref_forest: pd.Series, unet_p: pd.Series, weights: dict[int, float]
+) -> dict:
+    """FR-F1 selection (D-14): Random Forest (the sampling map, stratum 1 = forest) versus the
+    U-Net (p_forest >= 0.5) on the same labelled points; the higher forest F1 wins."""
+    idx = pts.index.intersection(ref_forest.index).intersection(unet_p.index)
+    strata = pts.loc[idx, "stratum"].to_numpy()
+    ref = ref_forest.loc[idx].to_numpy(bool)
+    rf = stratified_binary_report(strata, strata == 1, ref, weights)
+    un = stratified_binary_report(strata, unet_p.loc[idx].to_numpy() >= 0.5, ref, weights)
+    return {
+        "n_points": int(len(idx)),
+        "random_forest": rf,
+        "unet": un,
+        "selected": "unet" if un["forest_f1"] > rf["forest_f1"] else "random_forest",
+    }
+
+
 def validate_forest(cfg: DaiffConfig, reference_dir: Path = DEFAULT_REFERENCE_DIR) -> dict:
     ref = Path(reference_dir)
     pts_path = ref / f"forest_sample_points_{cfg.project.name}.csv"
@@ -110,6 +132,12 @@ def validate_forest(cfg: DaiffConfig, reference_dir: Path = DEFAULT_REFERENCE_DI
         "kappa_t": cohens_kappa(both.label_t_a, both.label_t_b) if len(both) else float("nan"),
         "kappa_t0": cohens_kappa(both.label_t0_a, both.label_t0_b) if len(both) else float("nan"),
     }
+    unet_csv = p.raw.root / "forest10m_unet" / "unet_points.csv"
+    if unet_csv.exists():
+        up = pd.read_csv(unet_csv)
+        up = up[up["year"] == up["year"].max()].set_index("point_id")["p_forest"]
+        ref_forest = adj["label_t"].eq("forest")
+        metrics["unet_compare"] = compare_with_unet(adj, ref_forest, up, weights)
     _write(p, "forest.json", metrics)
     return metrics
 
