@@ -6,7 +6,7 @@ _Last updated: 2026-10-26 — Samarth's machine (Claude session)_
 
 - **Phase:** P4 Tier 1 acceptance — in progress (P3 done 2026-10-26)
 - **Last done:** P3 closed. All Kopili raw layers, 9 forest maps, S2 previews, full `daiff run` (loeo flood model) published. Real results: FR-D3, FR-D5 pass; FR-D4 67.6 % (OI-11), FR-D2 2018 visual 14/20 (OI-13), FR-R2 AUC 0.762 vs HAND 0.516 (OI-12) — all raised for the guide.
-- **Next task:** P4.3 rest: `src/daiff/gee/chips.py` (256x256 chip export, quota-heavy: measure on one tile first), Colab notebooks `notebooks/colab/unet_train.ipynb` + `unet_infer.ipynb`, `daiff forest import-unet`. Done in P4: reference sample (739 points), NFR-2 bench (1->2 workers only 21 %, OI-4), `forest/unet.py` model (3 tests). Humans: label the 600+ points (Labelling page) so `daiff validate --what forest` can run (P4.4). Also: fix 2018 cloud mask (OI-13).
+- **Next task:** P4.4 once labels exist: `daiff validate --what forest` and compare RF vs U-Net on the labelled sample (D-14 selection). Done in P4: reference sample (739 points), NFR-2 bench, U-Net model, chips module, `daiff forest import-unet`, Colab notebooks (`notebooks/colab/`), labelling page with dated Sentinel-2 imagery. Humans: label points and run the Colab notebooks — see `docs/colab_and_labelling_guide.md`. Also: score `unet_points.csv` in validation, fix 2018 cloud mask (OI-13).
 - **Blockers:** none for P0–P2. P3 onward needs Earth Engine registration.
 - **Remote:** https://github.com/SamarthKale/DAIFF-Flood-Risk-Prediction (public, `main`)
 - **CI:** GitHub Actions `ci` (lint, tests, coverage gate, NFR-3 double run, gitleaks); non-blocking.
@@ -40,8 +40,9 @@ _Last updated: 2026-10-26 — Samarth's machine (Claude session)_
       `docs/setup/gee.md`), put the project ID in `.env`, and run
       `earthengine authenticate` yourself.
 - [ ] **Team:** choose a code licence (proposal: MIT) — needed for NFR-7.
-- [ ] **Team (P4):** label 600 reference points on the Labelling page (two interpreters + one
-      adjudicator).
+- [ ] **Team (P4):** label the 739 reference points on the Labelling page (two interpreters + one
+      adjudicator) — guide: `docs/colab_and_labelling_guide.md`.
+- [ ] **Samarth (P4):** run `notebooks/colab/unet_train.ipynb` then `unet_infer.ipynb` in Chrome (Colab T4), then `daiff forest import-unet`.
 - [ ] **Guide:** confirm OI-4 (HPC node type, GPU hours, NFR-1 budget) and OI-10 (Table 16
       targets); witness the FR-C2, FR-R1 and FR-V1 demos.
 - [ ] **Team (P4):** recruit 5 non-team testers for NFR-6.
@@ -62,6 +63,7 @@ _Last updated: 2026-10-26 — Samarth's machine (Claude session)_
 
 | Date | Who | Summary |
 |---|---|---|
+| 2026-10-27 | Samarth + Claude | Colab notebooks, chips, import-unet, dated imagery on Labelling page, labelling/Colab guide |
 | 2026-10-27 | Samarth + Claude | P4 started: 739 reference points drawn, NFR-2 benchmark on Kopili, U-Net model + CPU torch extra |
 | 2026-10-26 | Samarth + Claude | P3 closed: real Kopili run, loeo flood AUC 0.762, FR-D2 2018 fails visual check, previews done |
 | 2026-10-25 | Samarth + Claude | P2 API + dashboard done (FastAPI + React/MapLibre; NFR-5 server-side 0.13-0.20 s) |

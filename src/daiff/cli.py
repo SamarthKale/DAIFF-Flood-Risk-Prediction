@@ -11,6 +11,8 @@ from daiff import __version__
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 gee_app = typer.Typer(no_args_is_help=True, help="Google Earth Engine commands (P3).")
 app.add_typer(gee_app, name="gee")
+forest_app = typer.Typer(no_args_is_help=True, help="Forest classifier commands.")
+app.add_typer(forest_app, name="forest")
 
 ConfigOpt = typer.Option(..., "-c", "--config", help="Path to a YAML config in configs/.")
 
@@ -331,3 +333,25 @@ def check_metadata_cmd(
             typer.echo(f"{p.path}: {p.problem}")
         raise typer.Exit(1)
     typer.echo(f"NFR-4 PASS: {run_id}")
+
+
+@forest_app.command("import-unet")
+def forest_import_unet(
+    config: Path = ConfigOpt,
+    dir: Path = typer.Option(..., "--dir", help="Folder downloaded from Drive (DAIFF/unet_out)"),
+) -> None:
+    """Import U-Net class maps from Colab onto the 10 m grid (raw/forest10m_unet/)."""
+    import shutil
+
+    from daiff.forest.import_unet import import_unet
+    from daiff.store.raw_layout import NESTED_FACTOR, RawLayout
+
+    cfg = _load(config)
+    raw = RawLayout(cfg.data_root)
+    written = import_unet(_grid(cfg).nested(NESTED_FACTOR), dir, raw.root)
+    for w in written:
+        typer.echo(f"imported {w}")
+    points = Path(dir) / "unet_points.csv"
+    if points.exists():
+        shutil.copyfile(points, raw.root / "forest10m_unet" / "unet_points.csv")
+        typer.echo("imported unet_points.csv")

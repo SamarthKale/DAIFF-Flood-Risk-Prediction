@@ -24,9 +24,11 @@ WINDOW_M = 1000
 PX = WINDOW_M // 10  # 10 m pixels
 
 
-def pick_windows(valid: np.ndarray, grid: Grid, n: int, seed: int) -> list[tuple[float, float]]:
+def pick_windows(
+    valid: np.ndarray, grid: Grid, n: int, seed: int, window_m: float = WINDOW_M
+) -> list[tuple[float, float]]:
     """Centres (x, y in grid CRS) of `n` random windows fully inside the valid footprint."""
-    half = WINDOW_M / 2 / grid.res
+    half = window_m / 2 / grid.res
     rows, cols = np.nonzero(valid)
     rng = np.random.default_rng(seed)
     out: list[tuple[float, float]] = []

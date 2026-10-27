@@ -1,7 +1,7 @@
 import maplibregl from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getAgreement, getLabelPoints, postLabel } from "../api";
+import { getAgreement, getLabelPoints, getMeta, postLabel, tileUrl } from "../api";
 import { LabelForm } from "../components/LabelForm";
 import type { Interpreter, LabelIn, SamplePoint } from "../types";
 
@@ -20,14 +20,14 @@ const IMAGERY: maplibregl.StyleSpecification = {
   layers: [{ id: "esri", type: "raster", source: "esri" }],
 };
 
-const STRATA = ["", "stable forest", "stable non-forest", "loss"];
-
 export function LabellingPage() {
   const [who, setWho] = useState<Interpreter>("A");
   const [points, setPoints] = useState<SamplePoint[]>([]);
   const [i, setI] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [agree, setAgree] = useState<Awaited<ReturnType<typeof getAgreement>> | null>(null);
+  const [years, setYears] = useState<number[]>([]);
+  const [layer, setLayer] = useState<"esri" | number>("esri");
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const marker = useRef<maplibregl.Marker | null>(null);
@@ -51,6 +51,27 @@ export function LabellingPage() {
     map.current = m;
     return () => m.remove();
   }, []);
+
+  useEffect(() => {
+    getMeta()
+      .then((m) => setYears(m.layers.includes("preview") ? m.years : []))
+      .catch(() => setYears([]));
+  }, []);
+
+  // Dated Sentinel-2 composites let the interpreter compare the t0 and latest seasons.
+  useEffect(() => {
+    const m = map.current;
+    if (!m) return;
+    const apply = () => {
+      if (m.getLayer("s2")) m.removeLayer("s2");
+      if (m.getSource("s2")) m.removeSource("s2");
+      if (layer === "esri") return;
+      m.addSource("s2", { type: "raster", tiles: [tileUrl("preview", layer)], tileSize: 256 });
+      m.addLayer({ id: "s2", type: "raster", source: "s2" });
+    };
+    if (m.isStyleLoaded()) apply();
+    else m.once("load", apply);
+  }, [layer]);
 
   const p = points[i];
   useEffect(() => {
@@ -81,6 +102,23 @@ export function LabellingPage() {
             <option value="ADJ">Adjudicator</option>
           </select>
         </label>
+        {years.length > 0 && (
+          <label className="panel field">
+            <span>Imagery</span>
+            <select
+              aria-label="Imagery"
+              value={String(layer)}
+              onChange={(e) => setLayer(e.target.value === "esri" ? "esri" : Number(e.target.value))}
+            >
+              <option value="esri">Esri high-resolution (undated)</option>
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  Sentinel-2 dry season {y - 1}-{String(y).slice(2)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         {error && <div className="panel muted">{error}</div>}
         {p && (
           <>
@@ -90,7 +128,7 @@ export function LabellingPage() {
               </div>
               <div className="stat">{p.point_id}</div>
               <div className="muted small">
-                Map stratum: {STRATA[p.stratum]} · {p.lat.toFixed(5)}, {p.lon.toFixed(5)}
+                {p.lat.toFixed(5)}, {p.lon.toFixed(5)}
               </div>
               {visible && !visible.has(p.point_id) && (
                 <div className="muted small">A and B agree on this point — no adjudication needed.</div>
