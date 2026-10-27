@@ -26,14 +26,23 @@ def _predict_chunk(model, chunk: np.ndarray) -> np.ndarray:
     return model.predict_proba(chunk)[:, 1]
 
 
-def bench(cfg: DaiffConfig, workers: list[int], out: Path, repeat: int = 20) -> list[float]:
+def bench(
+    cfg: DaiffConfig,
+    workers: list[int],
+    out: Path,
+    repeat: int = 20,
+    max_rows: int = 20_000_000,
+) -> list[float]:
     run_id = current_run(cfg.data_root)
     if run_id is None:
         raise FileNotFoundError("no published run — run the pipeline first")
     p = plan_for_run(cfg, run_id)
     model, feats = load_model(p.models_dir / p.store.model_id_file.read_text().strip())
     stack, valid = assemble_features(features_for(p, max(p.years)), feats)
-    data = np.tile(stack[valid], (repeat, 1))  # enlarge so the benchmark measures compute
+    cells = stack[valid]
+    repeat = max(1, min(repeat, max_rows // max(1, len(cells))))  # cap memory on big basins
+    data = np.tile(cells, (repeat, 1))  # enlarge so the benchmark measures compute
+    del stack
     times = []
     for n in workers:
         rt = RuntimeConfig(n_workers=n, threads_per_worker=1)

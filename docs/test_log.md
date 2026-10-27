@@ -31,3 +31,5 @@ Rules:
 | 2026-10-26 | FR-D2 | I | kopili / raw ingest / 4f40320 | FAIL (visual part): reviewer Samarth, 20 windows per season: 2018 14/20 clean, 2022 18/20, 2026 18/20 (need 18/20 each). Raised as OI-13 | data/kopili/review/fr_d2.html + fr_d2_review_Samarth.csv | daiff.gee.review.score_review |
 | 2026-10-26 | FR-R2 | A | kopili / 0d24afb6480d / 4f40320d7472 | FAIL: AUC 0.762 (HAND 0.516); flooded in 4-5 0.57, area 0.03 | metrics/flood.json | daiff validate |
 | 2026-10-26 | FR-R3 | A | kopili / 0d24afb6480d / 4f40320d7472 | PASS: ablation dAUC 0.019 [0.019, 0.020] | metrics/flood.json | daiff validate |
+| 2026-10-27 | NFR-2 | T | kopili / 0d24afb6480d / e3ba3e7 | PARTIAL: predict bench 82.0 s (1 worker), 65.0 s (2), 35.8 s (4): 1→2 = 21 % less (target 40 %), 2→4 = 45 % less, 1→4 = 56 % less. Laptop, shared-memory; to re-measure on HPC | docs/perf/2026-10-27-Samarth-Legion.md | daiff bench |
+| 2026-10-27 | FR-F1 | I | kopili | Sample drawn for labelling: 739 points (439 stable, 150 loss, 150 gain), meets >= 600 and >= 150 loss. Labels pending (humans) | reference/forest_sample_points_kopili.csv | daiff sample-points |

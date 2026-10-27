@@ -33,7 +33,7 @@ One row per requirement in [`srs/requirements.md`](srs/requirements.md). Status 
 | FR-A2 | 2 | D | `daiff alerts replay` ≤ 1 h | P5 | not started |
 | FR-A3 | 3 | A | `docs/results/tier3_forecast.md` | P6 | not started |
 | NFR-1 | 1 | T | `docs/perf/` timed annual update ≤ 6 h | P4 | not started |
-| NFR-2 | 1 | T | `daiff bench` (2× workers → ≥ 40% faster) | P1/P4 | passing on laptop (1→2 workers: 42% less time); HPC in P4 |
+| NFR-2 | 1 | T | `daiff bench` (2× workers → ≥ 40% faster) | P1/P4 | Kopili laptop (20 cores, 20 M rows): 1→2 workers 21% less (**below** 40%), 2→4 workers 45% less (pass); recheck on an HPC node (OI-4) |
 | NFR-3 | 1 | T | `tests/integration/test_end_to_end.py::test_nfr_3_*`, CI double run | P0/P1 | passing (synthetic) |
 | NFR-4 | 1 | I | `daiff check-metadata`, `tests/store/test_check.py` | P0 | passing (synthetic) |
 | NFR-5 | 1 | T | `scripts/nfr5_timing.py` (+ browser 10 Mbps throttling in P4) | P2/P4 | passing server-side (synthetic) |
